@@ -1,13 +1,17 @@
 import { createAppContainer } from 'react-navigation';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
-import Home from './Tabs/HomeScreen'
-import Login from './Tabs/LoginPortal'
+import HomeScr from './Tabs/HomeScreen'
+import LoginPor from './Tabs/LoginPortal'
+import CreatePor from './Tabs/CreatePortal'
 const NavigationPortal = createBottomTabNavigator({
     Home: {
-        screen: Home
+        screen: HomeScr
     },
     Login: {
-        screen: Login
+        screen: LoginPor
+    },
+    Create: {
+        screen:CreatePor
     }
 });
 
