@@ -1,166 +1,263 @@
 import React, {Component} from 'react';
-import {Text, TextInput, Button, View, Alert, AsyncStorage} from 'react-native';
+import {
+  Image,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  Button,
+  View,
+  Alert,
+} from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 class ClientProfile extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      given_name: '',
-      family_name: '',
       email: '',
       password: '',
       userID: '',
+      xAuth: '',
+      validate: '',
       loggedOn: false,
       profileInfo: [],
     };
   }
 
-  asyncID = async id => {
-    try {
-      await AsyncStorage.setItem('@id', JSON.stringify(id));
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //   asyncID = async id => {
+  //     try {
+  //       await AsyncStorage.setItem('@id', JSON.stringify(id));
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
 
-  logTokenStorage = async token => {
-    try {
-      await AsyncStorage.setItem('@logintoken', token);
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  //   logTokenStorage = async token => {
+  //     try {
+  //       await AsyncStorage.setItem('@logintoken', token);
+  //     } catch (e) {
+  //       //console.error(e);
+  //     }
+  //   };
 
-  getAsyncId = async () => {
-    try {
-      const content = await AsyncStorage.getItem('@id');
-      if (content != null) {
-        this.setState({userID: content});
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  //   getAsyncId = async () => {
+  //     try {
+  //       const content = await AsyncStorage.getItem('@id');
+  //       if (content != null) {
+  //         this.setState({userID: content});
+  //         console.log(this.state.userID);
+  //       }
+  //     } catch (e) {
+  //       console.error(e);
+  //     }
+  //   };
 
-  create = () => {
-    let userIn = JSON.stringify({
-      given_name: this.state.given_name,
-      family_name: this.state.family_name,
-      email: this.state.email,
-      password: this.state.password,
+  ////////////////////////////////////////////////////////////////
+
+  passManage = text => {
+    this.setState({
+      password: text,
     });
-    console.log(userIn);
-    return fetch('http://10.0.2.2:3333/api/v0.0.5/user', {
-      method: 'POST',
-      body: userIn,
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    })
-      .then(response => {
-        console.log(response.status);
-        let userIn = response.json();
-        // console.log(userIn.status);
-        return userIn;
-      })
-      .then(responseJson => {
-        console.log(responseJson.token);
-      })
-      .catch(error => {
-        console.error(error);
-      });
+  };
+
+  emailManage = text => {
+    this.setState({
+      email: text,
+    });
   };
 
   login = () => {
-    let userIn = JSON.stringify({
-      email: this.state.email,
-      password: this.state.password,
-    });
-    console.log(userIn);
+    // let userIn = JSON.stringify({
+    //   email: this.state.email,
+    //   password: this.state.password,
+    // });
+    //console.log(userIn);
     return fetch('http://10.0.2.2:3333/api/v0.0.5/login', {
       method: 'POST',
-      body: userIn,
+      body: JSON.stringify({
+        email: this.state.email,
+        password: this.state.password,
+      }),
       headers: {
         'Content-Type': 'application/json',
       },
     })
       .then(response => {
-        console.log(response.status);
-        let userIn = response.json();
-        // console.log(res.status);
-        return userIn;
+        if (response.status != 200) {
+          console.log(response.status);
+          //let userIn = response.json();
+          console.log('Bad one kiddo');
+        }
+        return response.json();
       })
       .then(responseJson => {
-        console.log(responseJson.token);
-        Alert.alert('Successful login');
-        this.retrieveUserData(() => {
-          this.asyncID(responseJson.id);
-          this.logTokenStorage(responseJson.token);
-          this.setState({
-            loggedOn: true,
-          });
+        this.props.navigation.navigate('Home');
+        this.setState({
+          userID: JSON.stringify(responseJson.id),
+          xAuth: JSON.stringify(responseJson.token),
         });
+        console.log('Worked lad');
+        this.storeLoggedUser();
+        this.setState({
+          loggedOn: true,
+        });
+
+        Alert.alert("You're now logged in");
       })
       .catch(error => {
-        console.error(error);
+        console.error(error + 'Bad login');
+        this.setState({
+          validate: 'Wrong one buddy',
+        });
       });
   };
 
-  retrieveUserData(cred) {
-    return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.userID, {
-      method: 'GET',
+  logout = () => {
+    return fetch('http://10.0.2.2:3333/api/v0.0.5/logout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Authorization': this.state.xAuth,
+      },
     })
-      .then(retrieved => retrieved.json())
-      .then(retrievedJson => {
-        this.setState(
-          {
-            profileInfo: retrievedJson,
-          },
-          () => {
-            cred();
-          },
-        );
+      .then(response => 'OK')
+      .then(responseJson => {
+        Alert.alert('You have logged out');
+        this.userWipe();
+        this.setState({
+          loggedOn: false,
+        });
+      })
+      .catch(error => {
+        console.log('Error = ' + error);
       });
-    //   .catch(error =>{
-    //       console.log(error);
-    //   })
-  }
+  };
 
-  componentDidMount(){
-      this.getAsyncId();
-  }
+  //   componentDidMount() {
+  //     //this.getAsyncId();
+  //   }
 
   render() {
     if (this.state.loggedOn) {
       return (
-        <View>
-          <Text>Login Screen </Text>
-          <Button title="Login" onPress={this.login} />
+        <View style={styles.pageLay} accessible={true}>
+          <Text style={styles.pageTitle}>Logged in Screen</Text>
+          <TouchableOpacity
+            onPress={() => this.logout()}
+            style={styles.buttons}
+            accessibilityLabel="Logout"
+            accessibilityHint="Press the button to logout"
+            accessibilityRole="button">
+            <Text>Logout</Text>
+          </TouchableOpacity>
         </View>
       );
     } else {
       return (
-        <View>
-          <Text>Login Screen </Text>
+        <View style={styles.pageLay} accessible={true}>
+          <Text style={styles.pageTitle}>Login Screen </Text>
 
           <Text>Email</Text>
           <TextInput
-            value={this.state.email}
-            onChangeText={email => this.setState({email})}
+            placeholder="Email Address"
+            style={styles.inputText}
+            //value={this.state.email}
+            //onChangeText={this.emailManage}
+            onChangeText={this.emailManage}
             type="emailAddress"
           />
           <Text>Password</Text>
           <TextInput
-            value={this.state.password}
-            onChangeText={text => this.setState({password: text})}
+            //value={this.state.password}
+            placeholder="Account Password"
+            style={styles.inputText}
+            //onChangeText={this.passManage}
+            onChangeText={this.passManage}
             secureTextEntry
           />
-          <Button title="Login" onPress={this.login} />
+          <TouchableOpacity
+            onPress={() => this.login()}
+            style={styles.buttons}
+            accessibilityLabel="Login"
+            accessibilityHint="Press the button to login"
+            accessibilityRole="button">
+            <Text>Login</Text>
+          </TouchableOpacity>
         </View>
       );
     }
   }
+
+  async userWipe() {
+    try {
+      await AsyncStorage.removeItem('userID');
+      await AsyncStorage.removeItem('xAuth');
+      console.log('Success logout');
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async storeLoggedUser() {
+    try {
+      await AsyncStorage.setItem('userID', JSON.stringify(this.state.userID));
+      await AsyncStorage.setItem('xAuth', JSON.stringify(this.state.xAuth));
+      let userIDC = await AsyncStorage.getItem('userID');
+      let xAuthC = await AsyncStorage.getItem('xAuth');
+
+      console.log('user = ' + userIDC + ' auth = ' + xAuthC);
+    } catch (error) {
+      console.log('Error = ' + error);
+    }
+  }
 }
+
+const styles = StyleSheet.create({
+  pageLay: {
+    flex: 1,
+    flexDirection: 'column',
+    backgroundColor: '#ffffff',
+  },
+  buttons: {
+    alignItems: 'center',
+    backgroundColor: '#0070FF',
+    padding: 10,
+    marginLeft: 100,
+    marginRight: 100,
+    borderRadius: 3,
+    elevation: 2,
+  },
+  inputText: {
+    alignItems: 'center',
+    padding: 10,
+    marginLeft: 100,
+    marginTop: 10,
+    marginBottom: 10,
+    marginRight: 100,
+    borderColor: '#34495E',
+    borderRadius: 5,
+    borderWidth: 1.5,
+    backgroundColor: '#ffffff',
+    elevation: 3,
+  },
+  baseText: {
+    alignItems: 'center',
+    fontSize: 12,
+    marginBottom: 5,
+  },
+  pageTitle: {
+    alignItems: 'center',
+    marginLeft: 125,
+    fontSize: 30,
+    marginBottom: 10,
+  },
+  errorMessage: {
+    marginTop: 10,
+    textAlign: 'center',
+    fontSize: 15,
+    color: 'red',
+  },
+});
 
 export default ClientProfile;
