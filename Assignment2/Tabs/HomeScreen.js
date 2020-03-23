@@ -48,7 +48,7 @@ class HomeScreen extends Component {
     }
 
     return (
-      <View>
+      <View style={styles.mainView}>
         <Text> Home Screen </Text>
         {/* <Button
                 title="Login as User"
@@ -60,25 +60,59 @@ class HomeScreen extends Component {
             /> */}
         <FlatList
           data={this.state.userData}
-          renderItem={({item}) => <Text>{item.chit_content}</Text>}
+          style={styles.chitList}
+          renderItem={({item}) => (
+            <Text style={styles.chitItem}>
+              <Text style={styles.chitHeader}>
+                {item.user.given_name} {item.user.family_name}
+              </Text>
+              <Text> chitt'd {'\n'}</Text>
+              <Text>
+                {item.chit_content}
+                {'\n'}
+              </Text>
+              <Text>
+                Date posted {new Date(item.timestamp).toLocaleString()}
+              </Text>
+            </Text>
+          )}
           keyExtractor={({chitid}, mainKey) => chitid}
         />
       </View>
     );
   }
 }
-// const styles = StyleSheet.create({
-//   MainContainer: {
-//     flex: 1,
+const styles = StyleSheet.create({
+  mainView: {
+    flex: 1,
 
-//     // Set content's vertical alignment.
-//     justifyContent: 'center',
+    // Set content's vertical alignment.
+    justifyContent: 'center',
 
-//     // Set content's horizontal alignment.
-//     alignItems: 'center',
+    // Set content's horizontal alignment.
+    alignItems: 'center',
 
-//     // Set hex color code here.
-//     backgroundColor: '#FFEB3B',
-//   },
-// });
+    // Set hex color code here.
+    backgroundColor: '#FFEB3B',
+  },
+  chitList: {
+    fontSize: 12,
+    marginBottom: 5,
+  },
+  recentChits: {
+    fontWeight: 'bold',
+    paddingTop: 20,
+    textAlign: 'center',
+  },
+  chitItem: {
+    margin: 5,
+    padding: 20,
+    borderRadius: 10,
+    backgroundColor: '#e6ffff',
+    elevation: 2,
+  },
+  chitHeader: {
+    fontWeight: 'bold',
+  },
+});
 export default HomeScreen;
