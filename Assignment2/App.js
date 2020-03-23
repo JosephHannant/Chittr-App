@@ -6,6 +6,7 @@ import LoginPor from './Tabs/LoginPortal';
 import CreatePor from './Tabs/CreatePortal';
 import SearchPor from './Tabs/Search';
 import Profpor from './Tabs/ClientProfile';
+import Postpor from './Tabs/PostChits';
 const NavigationPortal = createBottomTabNavigator({
   Home: {
     screen: HomeScr,
@@ -15,6 +16,9 @@ const NavigationPortal = createBottomTabNavigator({
   },
   Create: {
     screen: CreatePor,
+  },
+  Post: {
+    screen: Postpor,
   },
   Search: {
     screen: SearchPor,

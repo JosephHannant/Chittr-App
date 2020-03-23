@@ -61,7 +61,7 @@ class HomeScreen extends Component {
         <FlatList
           data={this.state.userData}
           renderItem={({item}) => <Text>{item.chit_content}</Text>}
-          keyExtractor={({id}, index) => id}
+          keyExtractor={({chitid}, mainKey) => chitid}
         />
       </View>
     );

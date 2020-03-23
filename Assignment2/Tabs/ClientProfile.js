@@ -25,36 +25,6 @@ class ClientProfile extends Component {
     };
   }
 
-  //   asyncID = async id => {
-  //     try {
-  //       await AsyncStorage.setItem('@id', JSON.stringify(id));
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-
-  //   logTokenStorage = async token => {
-  //     try {
-  //       await AsyncStorage.setItem('@logintoken', token);
-  //     } catch (e) {
-  //       //console.error(e);
-  //     }
-  //   };
-
-  //   getAsyncId = async () => {
-  //     try {
-  //       const content = await AsyncStorage.getItem('@id');
-  //       if (content != null) {
-  //         this.setState({userID: content});
-  //         console.log(this.state.userID);
-  //       }
-  //     } catch (e) {
-  //       console.error(e);
-  //     }
-  //   };
-
-  ////////////////////////////////////////////////////////////////
-
   passManage = text => {
     this.setState({
       password: text,
@@ -116,15 +86,17 @@ class ClientProfile extends Component {
   logout = () => {
     return fetch('http://10.0.2.2:3333/api/v0.0.5/logout', {
       method: 'POST',
+      withCredentials: true,
       headers: {
         'Content-Type': 'application/json',
-        'X-Authorization': this.state.xAuth,
+        'X-Authorization': JSON.parse(this.state.xAuth),
       },
     })
       .then(response => 'OK')
       .then(responseJson => {
         Alert.alert('You have logged out');
         this.userWipe();
+        console.log('Auth = ' + this.xAuth + ', ID = ' + this.userID);
         this.setState({
           loggedOn: false,
         });
@@ -134,9 +106,9 @@ class ClientProfile extends Component {
       });
   };
 
-  //   componentDidMount() {
-  //     //this.getAsyncId();
-  //   }
+  componentDidMount() {
+    //this.getAsyncId();
+  }
 
   render() {
     if (this.state.loggedOn) {
