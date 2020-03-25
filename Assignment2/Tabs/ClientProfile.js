@@ -177,6 +177,12 @@ class ClientProfile extends Component {
   componentDidMount() {
     this.takeFocus = this.props.navigation.addListener('willFocus', () => {
       this.getProfile();
+      this.loadLoggedUser();
+      if (this.state.userID === null) {
+        this.state.loggedOn = false;
+      } else {
+        this.state.loggedOn = true;
+      }
     });
     this.getProfile();
   }
@@ -326,6 +332,22 @@ class ClientProfile extends Component {
     } catch (error) {
       console.log('Error = ' + error);
     }
+  }
+  async loadLoggedUser() {
+    const currentUserId = await AsyncStorage.getItem('userID');
+    const formattedUserId = await JSON.parse(currentUserId);
+    const xAuthKey = await AsyncStorage.getItem('xAuth');
+    const formattedXAuth = await JSON.parse(xAuthKey);
+    this.setState({
+      xAuth: formattedXAuth,
+      userID: formattedUserId,
+    });
+    console.log(
+      '[SUCCESS] Loaded data from user ID: ' +
+        this.state.userID +
+        ' and x-auth: ' +
+        this.state.xAuth,
+    );
   }
 }
 
