@@ -20,6 +20,9 @@ class Create extends Component {
       lastName: '',
     };
   }
+  updateNav = () => {
+    this.props.navigation.navigate('UpdateAccount');
+  };
 
   create = () => {
     let res = JSON.stringify({
@@ -93,6 +96,14 @@ class Create extends Component {
           accessibilityHint="Press the button to proceed to the create account screen"
           accessibilityRole="button">
           <Text>Create</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => this.updateNav()}
+          style={styles.buttonStyle}
+          accessibilityLabel="Create acount navigation"
+          accessibilityHint="Press the button to proceed to the create account screen"
+          accessibilityRole="button">
+          <Text>Update Existing Account</Text>
         </TouchableOpacity>
       </View>
     );

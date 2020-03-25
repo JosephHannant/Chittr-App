@@ -145,14 +145,19 @@ class PostChitsScreen extends Component {
         },
       })
         .then(response => {
-          if (this.state.chitPack.length > 141) {
-            console.log(
-              '[SUCCESS] Chit added without geotag (limited characters)',
-            );
+          if (response.status == 201) {
+            Alert.alert('Chit posted, returned to home');
+            if (this.state.chitPack.length > 141) {
+              console.log(
+                '[SUCCESS] Chit added without geotag (limited characters)',
+              );
+            } else {
+              console.log('[SUCCESS] Chit added without geotag');
+            }
+            this.props.navigation.goBack();
           } else {
-            console.log('[SUCCESS] Chit added without geotag');
+            Alert.alert('Failed to post, you are not logged in');
           }
-          this.props.navigation.goBack();
         })
         .catch(error => {
           console.error(error);

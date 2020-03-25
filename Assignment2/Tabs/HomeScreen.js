@@ -29,7 +29,7 @@ class HomeScreen extends Component {
   }
 
   getData() {
-    return fetch('http://10.0.2.2:3333/api/v0.0.5/chits')
+    return fetch('http://10.0.2.2:3333/api/v0.0.5/chits?start=0&count=100')
       .then(response => response.json())
       .then(responsejson => {
         this.setState({

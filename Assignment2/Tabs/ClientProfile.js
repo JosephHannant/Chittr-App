@@ -17,13 +17,9 @@ class ClientProfile extends Component {
     super(props);
     this.state = {
       email: '',
-      upEmail: '',
-      upPassword: '',
       password: '',
       userID: '',
       firstName: '',
-      upFirstName: '',
-      upLastName: '',
       lastName: '',
       xAuth: '',
       validate: '',
@@ -42,41 +38,6 @@ class ClientProfile extends Component {
     this.setState({
       email: text,
     });
-  };
-  createNavigator() {
-    this.props.navigation.navigate('Create');
-  }
-
-  updateDetails = () => {
-    console.log(this.state.xAuth);
-    let res = JSON.stringify({
-      given_name: this.state.upFirstName,
-      family_name: this.state.upLastName,
-      email: this.state.upEmail,
-      password: this.state.upPassword,
-    });
-    console.log(res);
-    return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.userID, {
-      method: 'PATCH',
-      body: res,
-      //withCredentials: true,
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Authorization': JSON.parse(this.state.xAuth),
-      },
-    })
-      .then(response => {
-        console.log(response.status);
-        //let res = response.json();
-        // console.log(res.status);
-        //return res;
-      })
-      .then(responseJson => {
-        Alert.alert('Account created');
-      })
-      .catch(error => {
-        console.error(error);
-      });
   };
 
   login = () => {
@@ -113,7 +74,7 @@ class ClientProfile extends Component {
         this.storeLoggedUser();
         this.getProfile();
         this.setState({
-          loggedOn: true,
+          //loggedOn: true,
           firstName: this.state.profileInfo.given_name,
           lastName: this.state.profileInfo.family_name,
         });
@@ -176,19 +137,21 @@ class ClientProfile extends Component {
 
   componentDidMount() {
     this.takeFocus = this.props.navigation.addListener('willFocus', () => {
-      this.getProfile();
       this.loadLoggedUser();
-      if (this.state.userID === null) {
+      this.getProfile();
+
+      if (this.state.xAuth === null) {
         this.state.loggedOn = false;
       } else {
         this.state.loggedOn = true;
       }
     });
     this.getProfile();
+    //this.state.loggedOn = false;
   }
 
   render() {
-    if (this.state.loggedOn) {
+    if (this.state.loggedOn === true) {
       //if (this.state.userID == null) {
       return (
         <View style={styles.mainView} accessible={true}>
@@ -212,57 +175,6 @@ class ClientProfile extends Component {
             accessibilityRole="button">
             <Text>Logout</Text>
           </TouchableOpacity>
-          <Text style={styles.pageHead}>Account Update</Text>
-
-          <Text style={styles.inputHead}>First name</Text>
-          <TextInput
-            style={styles.loggedTextStyle}
-            defaultValue={this.state.firstName}
-            value={this.state.upFirstName}
-            onChangeText={upFirstName => this.setState({upFirstName})}
-            type="givenName"
-          />
-
-          <Text style={styles.inputHead}>Last name</Text>
-          <TextInput
-            style={styles.loggedTextStyle}
-            defaultValue={this.state.lastName}
-            value={this.state.upLastName}
-            onChangeText={upLastName => this.setState({upLastName})}
-            type="familyName"
-          />
-
-          <Text style={styles.inputHead}>Email</Text>
-          <TextInput
-            style={styles.loggedTextStyle}
-            defaultValue={this.state.email}
-            value={this.state.upEmail}
-            onChangeText={upEmail => this.setState({upEmail})}
-            type="emailAddress"
-          />
-          <Text style={styles.inputHead}>Password</Text>
-          <TextInput
-            style={styles.loggedTextStyle}
-            defaultValue={this.state.password}
-            value={this.state.upPassword}
-            onChangeText={text => this.setState({upPassword: text})}
-            secureTextEntry
-          />
-          <TouchableOpacity
-            onPress={() => this.updateDetails()}
-            style={styles.buttonStyle}
-            accessibilityLabel="Create acount navigation"
-            accessibilityHint="Press the button to proceed to the create account screen"
-            accessibilityRole="button">
-            <Text>Create</Text>
-          </TouchableOpacity>
-          <Text style={styles.detailStyle}>
-            {"User's ID: "}
-            {this.state.userID}
-            {'\n'}
-            {this.state.profileInfo.given_name}{' '}
-            {this.state.profileInfo.family_name}
-          </Text>
         </View>
       );
     } else {
@@ -343,7 +255,7 @@ class ClientProfile extends Component {
       userID: formattedUserId,
     });
     console.log(
-      '[SUCCESS] Loaded data from user ID: ' +
+      '[SUCCESS] logged Loaded data from user ID: ' +
         this.state.userID +
         ' and x-auth: ' +
         this.state.xAuth,

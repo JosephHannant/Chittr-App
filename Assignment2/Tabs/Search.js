@@ -1,122 +1,127 @@
 import React, {Component} from 'react';
 import {
+  Text,
   TextInput,
   View,
   Button,
-  Image,
-  FlatList,
-  Text,
   Alert,
+  FlatList,
+  StyleSheet,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {SearchBar, ListItem} from 'react-native-elements';
 
-class Search extends Component {
+class SearchUserScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      content: '',
-      searchMade: false,
-      searchData: [],
+      search: '',
+      searchReasults: [],
     };
   }
 
-  search() {
-    return fetch(
-      'http://10.0.2.2:3333/api/v0.0.5/search_user?q=' + this.state.content,
-    )
-      .then(response => response.json())
-      .then(responseJson => {
-        if (responseJson.length == 0) {
-          Alert.alert('No Results Found');
-        } else {
+  //Retrieves ProfileID using AsyncStorage
+  storeSearchID = async id => {
+    try {
+      console.log('ID:', id);
+      await AsyncStorage.setItem('searchID', JSON.stringify(id));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //Search Function which stays blank if there is no text, or displays and adds results to dataList if there is
+  search = query => {
+    this.setState({search: query});
+    if (query !== '') {
+      return fetch('http://10.0.2.2:3333/api/v0.0.5/search_user?q=' + query)
+        .then(response => response.json())
+        .then(responseJson => {
           this.setState({
-            searchMade: true,
-            searchData: responseJson,
+            searchReasults: responseJson,
           });
-        }
-      })
-      .catch(error => {
-        console.log(error);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    } else {
+      this.setState({
+        searchReasults: [],
       });
-  }
+    }
+  };
+
+  //Navigate to single profile function
+  profileNav = selectedID => {
+    this.storeSearchID(selectedID);
+    this.props.navigation.navigate('UserProfiles');
+  };
 
   render() {
-    if (this.state.searchMade == true && this.state.searchData.length != 0) {
-      return (
-        <View>
-          <TextInput
-            onChangeText={content => {
-              return this.setState({content: content});
-            }}
-          />
-
-          <Button
-            onPress={() => {
-              this.setState({
-                searchMade: true,
-              });
-
-              this.search();
-            }}
-            title="Search"
-          />
-          <FlatList
-            data={this.state.searchData}
-            renderItem={({item}) => (
-              <View
-                style={{
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  marginBottom: 1,
-                  backgroundColor: '#000000',
-                }}>
-                <Image
-                  style={{
-                    height: 75,
-                    width: 75,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                  source={{
-                    uri:
-                      'http://10.0.2.2:3333/api/v0.0.5/user/' +
-                      item.user_id +
-                      '/photo/',
-                  }}
-                />
-                <Text
-                  style={{
-                    color: '#BB86FC',
-                  }}>
-                  {item.given_name}, {item.family_name}
-                </Text>
-              </View>
-            )}
-            keyExtractor={({id}) => id}
-          />
-        </View>
-      );
-    }
-
     return (
-      <View>
-        <TextInput
-          onChangeText={content => this.setState({content: content})}
+      <View style={styles.mainView}>
+        <SearchBar
+          noIcon={true}
+          placeholder="Search for a user"
+          onChangeText={this.search}
+          value={this.state.search}
+          //style={styles.mainView}
         />
-
-        <Button
-          onPress={() => {
-            this.setState({
-              searchMade: true,
-            });
-            this.search();
-          }}
-          title="Search"
+        <FlatList
+          data={this.state.searchReasults}
+          style={styles.chitList}
+          renderItem={({item}) => (
+            <ListItem
+              title={item.given_name + ' ' + item.family_name}
+              subtitle={item.email}
+              bottomDivider
+              chevron
+              containerStyle={styles.chitList}
+              titleStyle={styles.chitText}
+              subtitleStyle={styles.chitText}
+              onPress={() => this.profileNav(item.user_id)}
+            />
+          )}
+          keyExtractor={(item, index) => String(index)}
         />
       </View>
     );
   }
 }
 
-export default Search;
+const styles = StyleSheet.create({
+  mainView: {
+    flex: 1,
+
+    // Set content's vertical alignment.
+    //justifyContent: 'center',
+
+    // Set content's horizontal alignment.
+    //alignItems: 'center',
+    flexDirection: 'column',
+
+    // Set hex color code here.
+    backgroundColor: '#101010',
+
+    color: 'white',
+
+    fontSize: 12,
+  },
+
+  chitList: {
+    //ize: 15,
+    //color: 'white',
+    //marginBottom: 5,
+    //tintColor: '#101010',
+    backgroundColor: '#101010',
+  },
+  chitText: {
+    //ize: 15,
+    color: 'white',
+    //marginBottom: 5,
+    //tintColor: '#101010',
+    //backgroundColor: '#101010',
+  },
+});
+
+export default SearchUserScreen;
