@@ -39,11 +39,16 @@ class PostChitsScreen extends Component {
     const {navigate} = this.props.navigation;
 
     return (
-      <View accessible={true}>
+      <View accessible={true} style={styles.mainView}>
         <TextInput
+          style={styles.textStyle}
           //style={styles.textEntry}
           placeholder="Compose a Chit..."
+          placeholderTextColor="white"
           onChangeText={this.manageChitData}
+          multiline
+          numberOfLines={5}
+          maxLength={141}
           accessibilityLabel="Chit Content"
           accessibilityHint="Enter chit content here"
           accessibilityRole="keyboardkey"
@@ -66,6 +71,7 @@ class PostChitsScreen extends Component {
         <TouchableOpacity
           onPress={() => this.addChit()}
           //style={styles.button}
+          style={styles.buttonStyle}
           accessibilityLabel="Post Chit"
           accessibilityHint="Press the button to post the chit"
           accessibilityRole="button">
@@ -111,6 +117,9 @@ class PostChitsScreen extends Component {
   }
 
   componentDidMount() {
+    this.takeFocus = this.props.navigation.addListener('willFocus', () => {
+      this.loadLoggedUser();
+    });
     this.loadLoggedUser();
   }
 
@@ -151,4 +160,49 @@ class PostChitsScreen extends Component {
     }
   }
 }
+
+const styles = StyleSheet.create({
+  mainView: {
+    flex: 1,
+
+    // Set content's vertical alignment.
+    //justifyContent: 'center',
+
+    // Set content's horizontal alignment.
+    //alignItems: 'center',
+    flexDirection: 'column',
+
+    // Set hex color code here.
+    backgroundColor: '#101010',
+
+    color: 'white',
+
+    fontSize: 12,
+  },
+
+  textStyle: {
+    color: 'white',
+    //padding: 10,
+    marginLeft: 10,
+    marginTop: 20,
+    marginRight: 10,
+    borderColor: 'white',
+    borderRadius: 20,
+    borderWidth: 1.5,
+    height: 200,
+    fontSize: 12,
+  },
+  buttonStyle: {
+    alignItems: 'center',
+    backgroundColor: '#DCDCDC',
+    padding: 10,
+    marginLeft: 10,
+    marginRight: 10,
+    borderRadius: 3,
+    elevation: 2,
+    marginTop: 10,
+    height: 40,
+    color: 'white',
+  },
+});
 export default PostChitsScreen;

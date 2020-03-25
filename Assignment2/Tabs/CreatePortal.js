@@ -1,5 +1,13 @@
 import React, {Component} from 'react';
-import {Text, TextInput, Button, View, Alert} from 'react-native';
+import {
+  Text,
+  TextInput,
+  Button,
+  View,
+  Alert,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 
 class Create extends Component {
@@ -8,13 +16,15 @@ class Create extends Component {
     this.state = {
       email: '',
       password: '',
+      firstName: '',
+      lastName: '',
     };
   }
 
   create = () => {
     let res = JSON.stringify({
-      given_name: this.state.given_name,
-      family_name: this.state.family_name,
+      given_name: this.state.firstName,
+      family_name: this.state.lastName,
       email: this.state.email,
       password: this.state.password,
     });
@@ -23,7 +33,7 @@ class Create extends Component {
       method: 'POST',
       body: res,
       headers: {
-        Accept: 'application/json',
+        //Accept: 'application/json',
         'Content-Type': 'application/json',
       },
     })
@@ -34,7 +44,7 @@ class Create extends Component {
         return res;
       })
       .then(responseJson => {
-        console.log(responseJson.token);
+        Alert.alert('Account created');
       })
       .catch(error => {
         console.error(error);
@@ -43,39 +53,117 @@ class Create extends Component {
 
   render() {
     return (
-      <View>
-        <Text>Create Screen </Text>
+      <View style={styles.mainView}>
+        <Text style={styles.pageHead}>Create Screen </Text>
 
-        <Text>First name</Text>
+        <Text style={styles.inputHead}>First name</Text>
         <TextInput
-          value={this.state.given_name}
-          onChangeText={given_name => this.setState({given_name})}
+          style={styles.textStyle}
+          value={this.state.firstName}
+          onChangeText={firstName => this.setState({firstName})}
           type="givenName"
         />
 
-        <Text>Last name</Text>
+        <Text style={styles.inputHead}>Last name</Text>
         <TextInput
-          value={this.state.family_name}
-          onChangeText={family_name => this.setState({family_name})}
+          style={styles.textStyle}
+          value={this.state.lastName}
+          onChangeText={lastName => this.setState({lastName})}
           type="familyName"
         />
 
-        <Text>Email</Text>
+        <Text style={styles.inputHead}>Email</Text>
         <TextInput
+          style={styles.textStyle}
           value={this.state.email}
           onChangeText={email => this.setState({email})}
           type="emailAddress"
         />
-        <Text>Password</Text>
+        <Text style={styles.inputHead}>Password</Text>
         <TextInput
+          style={styles.textStyle}
           value={this.state.password}
           onChangeText={text => this.setState({password: text})}
           secureTextEntry
         />
-        <Button title="Create" onPress={this.create} />
+        <TouchableOpacity
+          onPress={() => this.create()}
+          style={styles.buttonStyle}
+          accessibilityLabel="Create acount navigation"
+          accessibilityHint="Press the button to proceed to the create account screen"
+          accessibilityRole="button">
+          <Text>Create</Text>
+        </TouchableOpacity>
       </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  mainView: {
+    flex: 1,
+
+    // Set content's vertical alignment.
+    //justifyContent: 'center',
+
+    // Set content's horizontal alignment.
+    //alignItems: 'center',
+    flexDirection: 'column',
+
+    // Set hex color code here.
+    backgroundColor: '#101010',
+
+    color: 'white',
+
+    fontSize: 12,
+  },
+
+  displayPhotoStyle: {
+    alignSelf: 'center',
+    paddingTop: 10,
+  },
+
+  textStyle: {
+    color: 'white',
+    //padding: 10,
+    marginLeft: 10,
+    marginTop: 5,
+    marginBottom: 20,
+    marginRight: 10,
+    borderColor: 'white',
+    borderRadius: 20,
+    borderWidth: 1.5,
+    height: 50,
+    fontSize: 12,
+  },
+  buttonStyle: {
+    alignItems: 'center',
+    backgroundColor: '#DCDCDC',
+    padding: 10,
+    marginLeft: 10,
+    marginRight: 10,
+    borderRadius: 3,
+    elevation: 2,
+    marginTop: 10,
+    height: 40,
+    color: 'white',
+  },
+  pageHead: {
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: 'white',
+  },
+  detailStyle: {
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 18,
+  },
+  inputHead: {
+    fontWeight: 'bold',
+    //textAlign: 'center',
+    color: 'white',
+  },
+});
 
 export default Create;

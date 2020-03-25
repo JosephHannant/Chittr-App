@@ -10,6 +10,7 @@ import {
   Button,
   View,
 } from 'react-native';
+import {withOrientation} from 'react-navigation';
 
 class HomeScreen extends Component {
   constructor(props) {
@@ -18,6 +19,13 @@ class HomeScreen extends Component {
       isLoading: true,
       userData: [],
     };
+  }
+
+  componentDidMount() {
+    this.takeFocus = this.props.navigation.addListener('willFocus', () => {
+      this.getData();
+    });
+    this.getData();
   }
 
   getData() {
@@ -34,10 +42,6 @@ class HomeScreen extends Component {
       });
   }
 
-  componentDidMount() {
-    this.getData();
-  }
-
   render() {
     if (this.state.isLoading) {
       return (
@@ -49,7 +53,7 @@ class HomeScreen extends Component {
 
     return (
       <View style={styles.mainView}>
-        <Text> Home Screen </Text>
+        <Text style={styles.pageHead}> Home Screen </Text>
         {/* <Button
                 title="Login as User"
                 onPress={()=> this.props.navigation.navigate('Login')}
@@ -60,18 +64,18 @@ class HomeScreen extends Component {
             /> */}
         <FlatList
           data={this.state.userData}
-          style={styles.chitList}
+          //style={styles.chitList}
           renderItem={({item}) => (
             <Text style={styles.chitItem}>
               <Text style={styles.chitHeader}>
                 {item.user.given_name} {item.user.family_name}
               </Text>
               <Text> chitt'd {'\n'}</Text>
-              <Text>
+              <Text style={styles.chitList}>
                 {item.chit_content}
                 {'\n'}
               </Text>
-              <Text>
+              <Text style={styles.chitDate}>
                 Date posted {new Date(item.timestamp).toLocaleString()}
               </Text>
             </Text>
@@ -93,10 +97,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
 
     // Set hex color code here.
-    backgroundColor: '#FFEB3B',
+    backgroundColor: '#101010',
   },
   chitList: {
+    fontSize: 15,
+    //color: 'white',
+    marginBottom: 5,
+  },
+  chitDate: {
     fontSize: 12,
+    //color: 'white',
     marginBottom: 5,
   },
   recentChits: {
@@ -104,12 +114,17 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     textAlign: 'center',
   },
+  pageHead: {
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: 'white',
+  },
   chitItem: {
-    margin: 5,
+    margin: 3,
     padding: 20,
-    borderRadius: 10,
-    backgroundColor: '#e6ffff',
-    elevation: 2,
+    borderRadius: 20,
+    backgroundColor: '#DCDCDC',
+    elevation: 1,
   },
   chitHeader: {
     fontWeight: 'bold',

@@ -26,6 +26,9 @@ const NavigationPortal = createBottomTabNavigator({
   Profile: {
     screen: Profpor,
   },
+  //   UserDetails: {
+  //     screen: UserDir,
+  //   },
 });
 
 const Container = createAppContainer(NavigationPortal);
