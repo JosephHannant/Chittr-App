@@ -5,7 +5,7 @@ import HomeScr from './Tabs/HomeScreen';
 import SearchPor from './Tabs/Search';
 import Profpor from './Tabs/ClientProfile';
 import SettingsPor from './Tabs/UserProfileNav';
-import Postpor from './Tabs/PostChits';
+import Postpor from './Tabs/PostNav';
 import SearchUsers from './Tabs/SearchUsers';
 const NavigationPortal = createBottomTabNavigator({
   Home: {

@@ -21,6 +21,7 @@ class PostChitsScreen extends Component {
       userID: '',
       xAuth: '',
       chitPack: '',
+      photo: null,
       //longitude: null,
       //latitude: null,
       //locationPermission: false,
@@ -29,6 +30,9 @@ class PostChitsScreen extends Component {
     };
   }
 
+  cameraNav = () => {
+    this.props.navigation.navigate('Camera');
+  };
   manageChitData = text => {
     this.setState({
       chitPack: text,
@@ -36,7 +40,7 @@ class PostChitsScreen extends Component {
   };
 
   render() {
-    const {navigate} = this.props.navigation;
+    //const {navigate} = this.props.navigation;
 
     return (
       <View accessible={true} style={styles.mainView}>
@@ -76,6 +80,14 @@ class PostChitsScreen extends Component {
           accessibilityHint="Press the button to post the chit"
           accessibilityRole="button">
           <Text>Post</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => this.cameraNav()}
+          style={styles.buttonStyle}
+          accessibilityLabel="Create acount navigation"
+          accessibilityHint="Press the button to proceed to the create account screen"
+          accessibilityRole="button">
+          <Text>Camera</Text>
         </TouchableOpacity>
 
         {/* <TouchableOpacity

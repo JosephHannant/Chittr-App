@@ -2,26 +2,24 @@ import React, {Component} from 'react';
 import {View, Text} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import CreateAccount from './CreatePortal';
-import UpdateAccount from './UpdateClientProfile';
-import Camera from './Camera'
+import Camera from './Camera';
+import Posting from './PostChits';
 
 const Pages = createStackNavigator();
 
 //Search User Navigation Code
 
-function ProfileNav() {
+function PostNav() {
   return (
     <NavigationContainer>
       <Pages.Navigator
-        initialRouteName="MainProfile"
+        initialRouteName="Post"
         screenOptions={{headerShown: true}}>
-        <Pages.Screen name="CreateAccount" component={CreateAccount} />
-        <Pages.Screen name="UpdateAccount" component={UpdateAccount} />
+        <Pages.Screen name="Post" component={Posting} />
         <Pages.Screen name="Camera" component={Camera} />
       </Pages.Navigator>
     </NavigationContainer>
   );
 }
 
-export default ProfileNav;
+export default PostNav;
