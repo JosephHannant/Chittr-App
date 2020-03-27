@@ -88,39 +88,21 @@ class SearchUserScreen extends Component {
     );
   }
 }
-
+//CSS styling sheet used throught the app to supply a consistent theme and improve user experience
 const styles = StyleSheet.create({
   mainView: {
     flex: 1,
-
-    // Set content's vertical alignment.
-    //justifyContent: 'center',
-
-    // Set content's horizontal alignment.
-    //alignItems: 'center',
     flexDirection: 'column',
-
-    // Set hex color code here.
     backgroundColor: '#101010',
-
     color: 'white',
-
     fontSize: 12,
   },
 
   chitList: {
-    //ize: 15,
-    //color: 'white',
-    //marginBottom: 5,
-    //tintColor: '#101010',
     backgroundColor: '#101010',
   },
   chitText: {
-    //ize: 15,
     color: 'white',
-    //marginBottom: 5,
-    //tintColor: '#101010',
-    //backgroundColor: '#101010',
   },
 });
 

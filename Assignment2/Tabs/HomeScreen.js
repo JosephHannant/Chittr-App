@@ -1,22 +1,10 @@
 import React, {Component} from 'react';
-import {
-  FlatList,
-  ActivityIndicator,
-  AppRegistry,
-  StyleSheet,
-  Text,
-  TextInput,
-  Alert,
-  Button,
-  View,
-} from 'react-native';
-import {withOrientation} from 'react-navigation';
+import {FlatList, StyleSheet, Text, View} from 'react-native';
 
 class HomeScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoading: true,
       userData: [],
     };
   }
@@ -33,7 +21,6 @@ class HomeScreen extends Component {
       .then(response => response.json())
       .then(responsejson => {
         this.setState({
-          isLoading: false,
           userData: responsejson,
         });
       })
@@ -43,25 +30,9 @@ class HomeScreen extends Component {
   }
 
   render() {
-    if (this.state.isLoading) {
-      return (
-        <View>
-          <ActivityIndicator />
-        </View>
-      );
-    }
-
     return (
       <View style={styles.mainView}>
         <Text style={styles.pageHead}> Home Screen </Text>
-        {/* <Button
-                title="Login as User"
-                onPress={()=> this.props.navigation.navigate('Login')}
-            />
-            <Button
-                title="Create account"
-                onPress={()=> this.props.navigation.navigate('Create')}
-            /> */}
         <FlatList
           data={this.state.userData}
           //style={styles.chitList}
@@ -77,6 +48,7 @@ class HomeScreen extends Component {
               </Text>
               <Text style={styles.chitDate}>
                 Date posted {new Date(item.timestamp).toLocaleString()}
+                {'\n'}lang: long:
               </Text>
             </Text>
           )}
@@ -86,27 +58,20 @@ class HomeScreen extends Component {
     );
   }
 }
+//CSS styling sheet used throught the app to supply a consistent theme and improve user experience
 const styles = StyleSheet.create({
   mainView: {
     flex: 1,
-
-    // Set content's vertical alignment.
     justifyContent: 'center',
-
-    // Set content's horizontal alignment.
     alignItems: 'center',
-
-    // Set hex color code here.
     backgroundColor: '#101010',
   },
   chitList: {
     fontSize: 15,
-    //color: 'white',
     marginBottom: 5,
   },
   chitDate: {
     fontSize: 12,
-    //color: 'white',
     marginBottom: 5,
   },
   recentChits: {

@@ -1,10 +1,9 @@
 import React, {Component} from 'react';
-import {View, Text} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import CreateAccount from './CreatePortal';
 import UpdateAccount from './UpdateClientProfile';
-import Camera from './Camera'
+import UpdateUserPhoto from './UpdateDP';
 
 const Pages = createStackNavigator();
 
@@ -18,7 +17,7 @@ function ProfileNav() {
         screenOptions={{headerShown: true}}>
         <Pages.Screen name="CreateAccount" component={CreateAccount} />
         <Pages.Screen name="UpdateAccount" component={UpdateAccount} />
-        <Pages.Screen name="Camera" component={Camera} />
+        <Pages.Screen name="UpdateDP" component={UpdateUserPhoto} />
       </Pages.Navigator>
     </NavigationContainer>
   );

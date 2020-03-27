@@ -158,8 +158,14 @@ class SearchUserScreen extends Component {
         <View style={styles.viewAvatar}>
           <Avatar
             rounded
-            source={{uri: this.state.photo}}
-            onPress={() => this.viewUploadPhoto()}
+            size="large"
+            source={{
+              uri:
+                'http://10.0.2.2:3333/api/v0.0.5/user/' +
+                this.state.userID +
+                '/photo?timestamp=' +
+                Date.now(),
+            }}
           />
         </View>
 
@@ -175,7 +181,7 @@ class SearchUserScreen extends Component {
             style={styles.buttonStyle}
             accessibilityLabel="Follow"
             accessibilityHint="Press to follow user"
-            accessibilityRole="Button">
+            accessibilityRole="button">
             <Text>Follow</Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -183,7 +189,7 @@ class SearchUserScreen extends Component {
             style={styles.buttonStyle}
             accessibilityLabel="Unfollow"
             accessibilityHint="Press to unfollow user"
-            accessibilityRole="Button">
+            accessibilityRole="button">
             <Text>Unfollow</Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -191,7 +197,7 @@ class SearchUserScreen extends Component {
             style={styles.buttonStyle}
             accessibilityLabel="View Followers"
             accessibilityHint="Press to view users followers"
-            accessibilityRole="Button">
+            accessibilityRole="button">
             <Text>View Followers</Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -199,7 +205,7 @@ class SearchUserScreen extends Component {
             style={styles.buttonStyle}
             accessibilityLabel="View Following"
             accessibilityHint="Press to view who the user is following"
-            accessibilityRole="Button">
+            accessibilityRole="button">
             <Text>View Following</Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -207,7 +213,7 @@ class SearchUserScreen extends Component {
             style={styles.buttonStyle}
             accessibilityLabel="View User Chits"
             accessibilityHint="Press to view user's chits"
-            accessibilityRole="Button">
+            accessibilityRole="button">
             <Text>User Chits</Text>
           </TouchableOpacity>
         </View>
@@ -215,23 +221,13 @@ class SearchUserScreen extends Component {
     );
   }
 }
-
+//CSS styling sheet used throught the app to supply a consistent theme and improve user experience
 const styles = StyleSheet.create({
   mainView: {
     flex: 1,
-
-    // Set content's vertical alignment.
-    //justifyContent: 'center',
-
-    // Set content's horizontal alignment.
-    //alignItems: 'center',
     flexDirection: 'column',
-
-    // Set hex color code here.
     backgroundColor: '#101010',
-
     color: 'white',
-
     fontSize: 12,
   },
 
@@ -248,13 +244,11 @@ const styles = StyleSheet.create({
   },
   chitList: {
     fontSize: 15,
-    //color: 'white',
     marginBottom: 5,
   },
 
   textStyle: {
     color: 'white',
-    //padding: 10,
     marginLeft: 10,
     marginTop: 5,
     marginBottom: 20,
@@ -267,7 +261,6 @@ const styles = StyleSheet.create({
   },
   loggedTextStyle: {
     color: 'white',
-    //padding: 10,
     marginLeft: 10,
     marginTop: 5,
     marginBottom: 20,
@@ -304,7 +297,6 @@ const styles = StyleSheet.create({
   },
   inputHead: {
     fontWeight: 'bold',
-    //textAlign: 'center',
     color: 'white',
   },
 });

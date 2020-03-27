@@ -2,13 +2,11 @@ import React, {Component} from 'react';
 import {
   Text,
   TextInput,
-  Button,
   View,
   Alert,
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
 
 class Create extends Component {
   constructor(props) {
@@ -36,17 +34,15 @@ class Create extends Component {
       method: 'POST',
       body: res,
       headers: {
-        //Accept: 'application/json',
         'Content-Type': 'application/json',
       },
     })
       .then(response => {
         console.log(response.status);
         let res = response.json();
-        // console.log(res.status);
         return res;
       })
-      .then(responseJson => {
+      .then(() => {
         Alert.alert('Account created');
       })
       .catch(error => {
@@ -113,30 +109,17 @@ class Create extends Component {
 const styles = StyleSheet.create({
   mainView: {
     flex: 1,
-
-    // Set content's vertical alignment.
-    //justifyContent: 'center',
-
-    // Set content's horizontal alignment.
-    //alignItems: 'center',
     flexDirection: 'column',
-
-    // Set hex color code here.
     backgroundColor: '#101010',
-
     color: 'white',
-
     fontSize: 12,
   },
-
   displayPhotoStyle: {
     alignSelf: 'center',
     paddingTop: 10,
   },
-
   textStyle: {
     color: 'white',
-    //padding: 10,
     marginLeft: 10,
     marginTop: 5,
     marginBottom: 20,
@@ -172,7 +155,6 @@ const styles = StyleSheet.create({
   },
   inputHead: {
     fontWeight: 'bold',
-    //textAlign: 'center',
     color: 'white',
   },
 });

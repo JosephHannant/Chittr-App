@@ -18,16 +18,16 @@ class ClientProfile extends Component {
     this.state = {
       email: '',
       password: '',
-      userID: '',
+      userID: null,
       firstName: '',
       lastName: '',
-      xAuth: '',
-      validate: '',
+      xAuth: null,
       loggedOn: false,
       profileInfo: [],
+      dPhoto: null,
     };
   }
-
+  //These get and set the value of the inputs from the text box and store it in a variable
   passManage = text => {
     this.setState({
       password: text,
@@ -39,56 +39,56 @@ class ClientProfile extends Component {
       email: text,
     });
   };
-
+  //Function for logging in, takes the inputs and passes them into the post request
+  //Checks the response on the request and gives an error if the status code isn't 200
   login = () => {
-    // let userIn = JSON.stringify({
-    //   email: this.state.email,
-    //   password: this.state.password,
-    // });
-    //console.log(userIn);
-    return fetch('http://10.0.2.2:3333/api/v0.0.5/login', {
-      method: 'POST',
-      body: JSON.stringify({
-        email: this.state.email,
-        password: this.state.password,
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then(response => {
-        if (response.status != 200) {
-          console.log(response.status);
-          //let userIn = response.json();
-          console.log('Bad one kiddo');
-        }
-        return response.json();
-      })
-      .then(responseJson => {
-        this.props.navigation.navigate('Home');
-        this.setState({
-          userID: JSON.stringify(responseJson.id),
-          xAuth: JSON.stringify(responseJson.token),
-        });
-        console.log('Worked lad');
-        this.storeLoggedUser();
-        this.getProfile();
-        this.setState({
-          //loggedOn: true,
-          firstName: this.state.profileInfo.given_name,
-          lastName: this.state.profileInfo.family_name,
-        });
+    if (this.state.email !== '') {
+      if (this.state.password !== '') {
+        return fetch('http://10.0.2.2:3333/api/v0.0.5/login', {
+          method: 'POST',
+          body: JSON.stringify({
+            email: this.state.email,
+            password: this.state.password,
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+          .then(response => {
+            if (response.status !== 200) {
+              console.log(response.status);
+              console.log('Incorrect email');
+            }
+            return response.json();
+          })
+          .then(responseJson => {
+            this.props.navigation.navigate('Home');
+            this.setState({
+              userID: JSON.stringify(responseJson.id),
+              xAuth: JSON.stringify(responseJson.token),
+            });
+            console.log('Worked lad');
+            this.storeLoggedUser();
+            this.getProfile();
+            this.setState({
+              firstName: this.state.profileInfo.given_name,
+              lastName: this.state.profileInfo.family_name,
+            });
 
-        Alert.alert("You're now logged in");
-      })
-      .catch(error => {
-        console.error(error + 'Bad login');
-        this.setState({
-          validate: 'Wrong one buddy',
-        });
-      });
+            Alert.alert("You're now logged in");
+          })
+          .catch(error => {
+            console.error(error + 'Bad login');
+          });
+      } else {
+        Alert.alert('No password entered');
+      }
+    } else {
+      Alert.alert('No email entered');
+    }
   };
-
+  //Function which kicks the user off the account when the logout button is pressed
+  //posts logout to the server
   logout = () => {
     return fetch('http://10.0.2.2:3333/api/v0.0.5/logout', {
       method: 'POST',
@@ -111,16 +111,19 @@ class ClientProfile extends Component {
         console.log('Error = ' + error);
       });
   };
-
+  //gets the details of the logged in user from the server
   getProfile = () => {
+    if (this.state.xAuth === null) {
+      this.state.loggedOn = false;
+    } else {
+      this.state.loggedOn = true;
+    }
     return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.userID, {
       method: 'GET',
     })
       .then(response => response.json())
       .then(responseJson => {
         this.setState({
-          //firstName: responseJson.given_name,
-          //lastName: responseJson.family_name,
           profileInfo: responseJson,
         });
         console.log(
@@ -134,30 +137,32 @@ class ClientProfile extends Component {
         console.log('Error = ' + error);
       });
   };
-
+  //
   componentDidMount() {
     this.takeFocus = this.props.navigation.addListener('willFocus', () => {
       this.loadLoggedUser();
-      this.getProfile();
-
-      if (this.state.xAuth === null) {
-        this.state.loggedOn = false;
-      } else {
-        this.state.loggedOn = true;
-      }
     });
-    this.getProfile();
-    //this.state.loggedOn = false;
+    this.loadLoggedUser();
   }
 
   render() {
     if (this.state.loggedOn === true) {
-      //if (this.state.userID == null) {
+      console.log(this.state.userID);
       return (
         <View style={styles.mainView} accessible={true}>
           <Text style={styles.pageHead}>Logged in Screen</Text>
           <View style={styles.displayPhotoStyle}>
-            <Avatar size="xlarge" rounded />
+            <Avatar
+              size="xlarge"
+              rounded
+              source={{
+                uri:
+                  'http://10.0.2.2:3333/api/v0.0.5/user/' +
+                  this.state.userID +
+                  '/photo?timestamp=' +
+                  Date.now(),
+              }}
+            />
           </View>
 
           <Text style={styles.detailStyle}>
@@ -187,18 +192,14 @@ class ClientProfile extends Component {
             placeholder="Email Address"
             placeholderTextColor="white"
             style={styles.textStyle}
-            //value={this.state.email}
-            //onChangeText={this.emailManage}
             onChangeText={this.emailManage}
             type="emailAddress"
           />
           <Text style={styles.inputHead}>Password</Text>
           <TextInput
-            //value={this.state.password}
             placeholder="Account Password"
             placeholderTextColor="white"
             style={styles.textStyle}
-            //onChangeText={this.passManage}
             onChangeText={this.passManage}
             secureTextEntry
           />
@@ -222,7 +223,7 @@ class ClientProfile extends Component {
       );
     }
   }
-
+  //Async to wipe the stored credentials tor estrict access on other parts of the app
   async userWipe() {
     try {
       await AsyncStorage.removeItem('userID');
@@ -232,7 +233,7 @@ class ClientProfile extends Component {
       console.log(error);
     }
   }
-
+  //Stores the data of the current user who has logged in
   async storeLoggedUser() {
     try {
       await AsyncStorage.setItem('userID', JSON.stringify(this.state.userID));
@@ -245,6 +246,7 @@ class ClientProfile extends Component {
       console.log('Error = ' + error);
     }
   }
+  //Loads the current user from the async storage
   async loadLoggedUser() {
     const currentUserId = await AsyncStorage.getItem('userID');
     const formattedUserId = await JSON.parse(currentUserId);
@@ -254,6 +256,7 @@ class ClientProfile extends Component {
       xAuth: formattedXAuth,
       userID: formattedUserId,
     });
+    this.getProfile();
     console.log(
       '[SUCCESS] logged Loaded data from user ID: ' +
         this.state.userID +
@@ -262,23 +265,14 @@ class ClientProfile extends Component {
     );
   }
 }
-
+//CSS styling sheet used throught the app to supply a consistent theme and improve user experience
 const styles = StyleSheet.create({
   mainView: {
     flex: 1,
-
-    // Set content's vertical alignment.
-    //justifyContent: 'center',
-
-    // Set content's horizontal alignment.
-    //alignItems: 'center',
+    justifyContent: 'center',
     flexDirection: 'column',
-
-    // Set hex color code here.
     backgroundColor: '#101010',
-
     color: 'white',
-
     fontSize: 12,
   },
 
@@ -289,7 +283,6 @@ const styles = StyleSheet.create({
 
   textStyle: {
     color: 'white',
-    //padding: 10,
     marginLeft: 10,
     marginTop: 5,
     marginBottom: 20,
@@ -302,7 +295,6 @@ const styles = StyleSheet.create({
   },
   loggedTextStyle: {
     color: 'white',
-    //padding: 10,
     marginLeft: 10,
     marginTop: 5,
     marginBottom: 20,
@@ -338,55 +330,8 @@ const styles = StyleSheet.create({
   },
   inputHead: {
     fontWeight: 'bold',
-    //textAlign: 'center',
     color: 'white',
   },
 });
-// const styles = StyleSheet.create({
-//   pageLay: {
-//     flex: 1,
-//     flexDirection: 'column',
-//     backgroundColor: '#ffffff',
-//   },
-//   buttons: {
-//     alignItems: 'center',
-//     backgroundColor: '#0070FF',
-//     padding: 10,
-//     marginLeft: 100,
-//     marginRight: 100,
-//     borderRadius: 3,
-//     elevation: 2,
-//   },
-//   inputText: {
-//     alignItems: 'center',
-//     padding: 10,
-//     marginLeft: 100,
-//     marginTop: 10,
-//     marginBottom: 10,
-//     marginRight: 100,
-//     borderColor: '#34495E',
-//     borderRadius: 5,
-//     borderWidth: 1.5,
-//     backgroundColor: '#ffffff',
-//     elevation: 3,
-//   },
-//   baseText: {
-//     alignItems: 'center',
-//     fontSize: 12,
-//     marginBottom: 5,
-//   },
-//   pageTitle: {
-//     alignItems: 'center',
-//     marginLeft: 125,
-//     fontSize: 30,
-//     marginBottom: 10,
-//   },
-//   errorMessage: {
-//     marginTop: 10,
-//     textAlign: 'center',
-//     fontSize: 15,
-//     color: 'red',
-//   },
-// });
 
 export default ClientProfile;

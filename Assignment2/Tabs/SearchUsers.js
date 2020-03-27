@@ -1,6 +1,4 @@
-//import * as React from 'react';
 import React, {Component} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 
@@ -8,7 +6,7 @@ import Search from './Search';
 import userProfiles from './ProfileView';
 import userFollowers from './follow/FollowerList';
 import userFollowing from './follow/FollowingList';
-import userChits from './follow/UserChits'
+import userChits from './follow/UserChits';
 
 const Pages = createStackNavigator();
 

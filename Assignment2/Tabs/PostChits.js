@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {
-  Image,
   CheckBox,
   PermissionsAndroid,
   StyleSheet,
@@ -10,7 +9,7 @@ import {
   Text,
   View,
 } from 'react-native';
-//import Geolocation from 'react-native-geolocation-service';
+import Geolocation from 'react-native-geolocation-service';
 import AsyncStorage from '@react-native-community/async-storage';
 
 class PostChitsScreen extends Component {
@@ -20,13 +19,13 @@ class PostChitsScreen extends Component {
     this.state = {
       userID: '',
       xAuth: '',
+      profileInfo: [],
       chitPack: '',
       photo: null,
-      //longitude: null,
-      //latitude: null,
-      //locationPermission: false,
-      //geotag: false,
-      validation: '',
+      longitude: null,
+      latitude: null,
+      locationPermission: false,
+      chitLocation: false,
     };
   }
 
@@ -38,15 +37,70 @@ class PostChitsScreen extends Component {
       chitPack: text,
     });
   };
+  findCoordinates = () => {
+    if (!this.state.locationPermission) {
+      this.state.locationPermission = this.requestLocationPermission();
+    }
+
+    Geolocation.getCurrentPosition(
+      position => {
+        const longitude = JSON.stringify(position.coords.longitude);
+        const latitude = JSON.stringify(position.coords.latitude);
+        this.setState({
+          longitude: longitude,
+          latitude: latitude,
+        });
+        console.log('Location data acquired');
+      },
+      error => {
+        Alert.alert(error.message);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 20000,
+        maximumAge: 1000,
+      },
+    );
+  };
+
+  requestLocationPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Chittr Location Permission',
+          message: 'Chittr wants to know your location.',
+          buttonNeutral: 'Ask again later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('Location is enabled');
+        return true;
+      } else {
+        console.log('Location is not enabled');
+        return false;
+      }
+    } catch (error) {
+      console.warn(error);
+    }
+  };
 
   render() {
-    //const {navigate} = this.props.navigation;
-
     return (
       <View accessible={true} style={styles.mainView}>
+        <Text style={styles.detailStyle}>
+          {'Current user: '}
+          {this.state.userID}
+          {'\n'}
+          {"User's name: "}
+          {this.state.profileInfo.given_name}{' '}
+          {this.state.profileInfo.family_name}
+        </Text>
         <TextInput
           style={styles.textStyle}
-          //style={styles.textEntry}
           placeholder="Compose a Chit..."
           placeholderTextColor="white"
           onChangeText={this.manageChitData}
@@ -57,24 +111,21 @@ class PostChitsScreen extends Component {
           accessibilityHint="Enter chit content here"
           accessibilityRole="keyboardkey"
         />
-
-        <Text>{this.state.validation}</Text>
-
-        {/* <View>
-          <CheckBox
-            title="Add Geotag"
-            value={this.state.geotag}
-            onValueChange={() => this.setState({geotag: !this.state.geotag})}
-            accessibilityLabel="Add Geotag"
-            accessibilityHint="Select this checkbox to add a geotag to your chit"
-            accessibilityRole="checkbox"
-          />
-          <Text>Add Geotag?</Text>
-        </View> */}
-
+        <CheckBox
+          center
+          title="Add Geotag"
+          titleStyle={styles.textStyle}
+          value={this.state.chitLocation}
+          onValueChange={() =>
+            this.setState({chitLocation: !this.state.chitLocation})
+          }
+          accessibilityLabel="Add Geotag"
+          accessibilityHint="Select this checkbox to add a geotag to your chit"
+          accessibilityRole="checkbox"
+        />
+        <Text style={styles.chitText}>Add location?</Text>
         <TouchableOpacity
-          onPress={() => this.addChit()}
-          //style={styles.button}
+          onPress={() => this.postChit()}
           style={styles.buttonStyle}
           accessibilityLabel="Post Chit"
           accessibilityHint="Press the button to post the chit"
@@ -120,86 +171,129 @@ class PostChitsScreen extends Component {
       xAuth: formattedXAuth,
       userID: formattedUserId,
     });
+    this.getProfile();
     console.log(
-      '[SUCCESS] Loaded data from user ID: ' +
+      'Loaded data from user ID: ' +
         this.state.userID +
         ' and x-auth: ' +
         this.state.xAuth,
     );
   }
 
+  getProfile = () => {
+    if (this.state.xAuth === null) {
+      this.state.loggedOn = false;
+    } else {
+      this.state.loggedOn = true;
+    }
+    return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.userID, {
+      method: 'GET',
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        this.setState({
+          profileInfo: responseJson,
+        });
+        console.log(
+          'First name is ' +
+            this.state.profileInfo.given_name +
+            ', Last name is ' +
+            this.state.profileInfo.family_name,
+        );
+      })
+      .catch(error => {
+        console.log('Error = ' + error);
+      });
+  };
+
   componentDidMount() {
     this.takeFocus = this.props.navigation.addListener('willFocus', () => {
       this.loadLoggedUser();
+      this.findCoordinates();
     });
     this.loadLoggedUser();
+    this.findCoordinates();
   }
 
-  addChit() {
+  postChit() {
     var date = Date.parse(new Date());
-
-    if (this.state.chitPack == '') {
-      this.setState({
-        validation: 'Please type a Chit!',
-      });
-      console.log('[ERROR] User did not type a chit, displaying error.');
+    if (this.state.chitPack.length > 141) {
+      Alert.alert('Chit is too long please shorten it');
     } else {
-      console.log('[DEBUG] Attempting to post chit without geotag.');
-      return fetch('http://10.0.2.2:3333/api/v0.0.5/chits', {
-        method: 'POST',
-        body: JSON.stringify({
-          chit_content: this.state.chitPack,
-          timestamp: date,
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Authorization': JSON.parse(this.state.xAuth),
-        },
-      })
-        .then(response => {
-          if (response.status == 201) {
-            Alert.alert('Chit posted, returned to home');
-            if (this.state.chitPack.length > 141) {
-              console.log(
-                '[SUCCESS] Chit added without geotag (limited characters)',
-              );
-            } else {
-              console.log('[SUCCESS] Chit added without geotag');
-            }
-            this.props.navigation.goBack();
-          } else {
-            Alert.alert('Failed to post, you are not logged in');
-          }
-        })
-        .catch(error => {
-          console.error(error);
-        });
+      console.log(this.state.chitPack.length);
+      if (this.state.chitPack === '') {
+        console.log('No chit was input');
+      } else {
+        if (this.state.chitLocation === true) {
+          console.log('Posting chit with location included');
+          return fetch('http://10.0.2.2:3333/api/v0.0.5/chits', {
+            method: 'POST',
+            body: JSON.stringify({
+              chit_content: this.state.chitPack,
+              timestamp: date,
+              location: {
+                longitude: JSON.parse(this.state.longitude),
+                latitude: JSON.parse(this.state.latitude),
+              },
+            }),
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Authorization': JSON.parse(this.state.xAuth),
+            },
+          })
+            .then(response => {
+              if (response.status === 201) {
+                Alert.alert('Chit posted, returned to home');
+                console.log('Chit included location data');
+                this.props.navigation.goBack();
+              } else {
+                Alert.alert('Failed to post, you are not logged in');
+              }
+            })
+            .catch(error => {
+              console.error(error);
+            });
+        } else {
+          console.log('Posting chit without location data');
+          return fetch('http://10.0.2.2:3333/api/v0.0.5/chits', {
+            method: 'POST',
+            body: JSON.stringify({
+              chit_content: this.state.chitPack,
+              timestamp: date,
+            }),
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Authorization': JSON.parse(this.state.xAuth),
+            },
+          })
+            .then(response => {
+              if (response.status === 201) {
+                Alert.alert('Chit posted successfully');
+                console.log('No location data was added');
+                this.props.navigation.goBack();
+              } else {
+                Alert.alert('Failed to post, you are not logged in');
+              }
+            })
+            .catch(error => {
+              console.error(error);
+            });
+        }
+      }
     }
   }
 }
-
+//CSS styling sheet used throught the app to supply a consistent theme and improve user experience
 const styles = StyleSheet.create({
   mainView: {
     flex: 1,
-
-    // Set content's vertical alignment.
-    //justifyContent: 'center',
-
-    // Set content's horizontal alignment.
-    //alignItems: 'center',
     flexDirection: 'column',
-
-    // Set hex color code here.
     backgroundColor: '#101010',
-
     color: 'white',
-
     fontSize: 12,
   },
-
   textStyle: {
     color: 'white',
-    //padding: 10,
     marginLeft: 10,
     marginTop: 20,
     marginRight: 10,
@@ -208,6 +302,15 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     height: 200,
     fontSize: 12,
+  },
+  detailStyle: {
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 18,
+  },
+  chitText: {
+    color: 'white',
   },
   buttonStyle: {
     alignItems: 'center',

@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {
-  Image,
   Text,
   StyleSheet,
   TextInput,
@@ -11,52 +10,221 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 import {Avatar} from 'react-native-elements';
 
-class ClientProfile extends Component {
+class UpdateClientProfile extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: '',
       upEmail: '',
       upPassword: '',
-      password: '',
       userID: '',
-      firstName: '',
       upFirstName: '',
       upLastName: '',
-      lastName: '',
       xAuth: '',
-      validate: '',
-      loggedOn: false,
       profileInfo: [],
     };
   }
 
-  updateDetails = () => {
+  updateAll = () => {
     console.log(this.state.xAuth);
-    let res = JSON.stringify({
-      given_name: this.state.upFirstName,
-      family_name: this.state.upLastName,
-      email: this.state.upEmail,
-      password: this.state.upPassword,
-    });
-    console.log(res);
-    return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.userID, {
-      method: 'PATCH',
-      body: res,
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Authorization': JSON.parse(this.state.xAuth),
-      },
-    })
-      .then(response => {
-        console.log(response.status);
-      })
-      .then(responseJson => {
-        Alert.alert('Account created');
-      })
-      .catch(error => {
-        console.error(error);
+    if (this.state.upFirstName !== '') {
+      if (this.state.upLastName !== '') {
+        if (this.state.upEmail !== '') {
+          if (this.state.upPassword !== '') {
+            let res = JSON.stringify({
+              given_name: this.state.upFirstName,
+              family_name: this.state.upLastName,
+              email: this.state.upEmail,
+              password: this.state.upPassword,
+            });
+            console.log(res);
+            return fetch(
+              'http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.userID,
+              {
+                method: 'PATCH',
+                body: res,
+                headers: {
+                  'Content-Type': 'application/json',
+                  'X-Authorization': JSON.parse(this.state.xAuth),
+                },
+              },
+            )
+              .then(response => {
+                console.log(response.status);
+                if (response.status === 201) {
+                  Alert.alert('Uppdate successful');
+                } else {
+                  Alert.alert('Problem occurred: ' + response.status);
+                }
+              })
+              .then(responseJson => {
+                console.log(responseJson);
+              })
+              .catch(error => {
+                console.error(error);
+              });
+          } else {
+            Alert.alert('No password entered');
+          }
+        } else {
+          Alert.alert('No email entered');
+        }
+      } else {
+        Alert.alert('No last name entered');
+      }
+    } else {
+      Alert.alert('No first name entered');
+    }
+  };
+  updateFirstName = () => {
+    console.log(this.state.xAuth);
+    if (this.state.upFirstName !== '') {
+      let res = JSON.stringify({
+        given_name: this.state.upFirstName,
       });
+      console.log(res);
+      return fetch(
+        'http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.userID,
+        {
+          method: 'PATCH',
+          body: res,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Authorization': JSON.parse(this.state.xAuth),
+          },
+        },
+      )
+        .then(response => {
+          console.log(response.status);
+          if (response.status === 201) {
+            Alert.alert('Uppdate successful');
+          } else {
+            Alert.alert('Problem occurred: ' + response.status);
+          }
+        })
+        .then(responseJson => {
+          console.log(responseJson);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    } else {
+      Alert.alert('No first name entered');
+    }
+  };
+
+  updateLastName = () => {
+    console.log(this.state.xAuth);
+    if (this.state.upLastName !== '') {
+      let res = JSON.stringify({
+        family_name: this.state.upLastName,
+      });
+      console.log(res);
+      return fetch(
+        'http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.userID,
+        {
+          method: 'PATCH',
+          body: res,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Authorization': JSON.parse(this.state.xAuth),
+          },
+        },
+      )
+        .then(response => {
+          console.log(response.status);
+          if (response.status === 201) {
+            Alert.alert('Uppdate successful');
+          } else {
+            Alert.alert('Problem occurred: ' + response.status);
+          }
+        })
+        .then(responseJson => {
+          console.log(responseJson);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    } else {
+      Alert.alert('No last name entered');
+    }
+  };
+
+  updateEmail = () => {
+    console.log(this.state.xAuth);
+    if (this.state.upEmail !== '') {
+      let res = JSON.stringify({
+        email: this.state.upEmail,
+      });
+      console.log(res);
+      return fetch(
+        'http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.userID,
+        {
+          method: 'PATCH',
+          body: res,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Authorization': JSON.parse(this.state.xAuth),
+          },
+        },
+      )
+        .then(response => {
+          console.log(response.status);
+          if (response.status === 201) {
+            Alert.alert('Uppdate successful');
+          } else {
+            Alert.alert('Problem occurred: ' + response.status);
+          }
+        })
+        .then(responseJson => {
+          console.log(responseJson);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    } else {
+      Alert.alert('No Email entered');
+    }
+  };
+
+  updatePassword = () => {
+    console.log(this.state.xAuth);
+    if (this.state.upPassword !== '') {
+      let res = JSON.stringify({
+        password: this.state.upPassword,
+      });
+      console.log(res);
+      return fetch(
+        'http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.userID,
+        {
+          method: 'PATCH',
+          body: res,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Authorization': JSON.parse(this.state.xAuth),
+          },
+        },
+      )
+        .then(response => {
+          console.log(response.status);
+          if (response.status === 201) {
+            Alert.alert('Uppdate successful');
+          } else {
+            Alert.alert('Problem occurred: ' + response.status);
+          }
+        })
+        .then(responseJson => {
+          console.log(responseJson);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    } else {
+      Alert.alert('No password entered');
+    }
+  };
+
+  updateDPNav = () => {
+    this.props.navigation.navigate('UpdateDP');
   };
 
   getProfile = () => {
@@ -83,18 +251,27 @@ class ClientProfile extends Component {
   componentDidMount() {
     this.takeFocus = this.props.navigation.addListener('willFocus', () => {
       this.loadLoggedUser();
-      this.getProfile();
     });
     this.loadLoggedUser();
-    this.getProfile();
   }
 
   render() {
     return (
       <View style={styles.mainView} accessible={true}>
-        <Text style={styles.pageHead}>Logged in Screen</Text>
+        <Text style={styles.pageHead}>Update Display Photo</Text>
         <View style={styles.displayPhotoStyle}>
-          <Avatar size="medium" rounded />
+          <Avatar
+            size="medium"
+            rounded
+            onPress={() => this.updateDPNav()}
+            source={{
+              uri:
+                'http://10.0.2.2:3333/api/v0.0.5/user/' +
+                this.state.userID +
+                '/photo?timestamp=' +
+                Date.now(),
+            }}
+          />
         </View>
 
         <Text style={styles.detailStyle}>
@@ -141,12 +318,44 @@ class ClientProfile extends Component {
           secureTextEntry
         />
         <TouchableOpacity
-          onPress={() => this.updateDetails()}
+          onPress={() => this.updateAll()}
           style={styles.buttonStyle}
-          accessibilityLabel="Create acount navigation"
-          accessibilityHint="Press the button to proceed to the create account screen"
+          accessibilityLabel="Update account"
+          accessibilityHint="Press the button to proceed to update all account details"
           accessibilityRole="button">
           <Text>Update</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => this.updateFirstName()}
+          style={styles.buttonStyle}
+          accessibilityLabel="Update first name"
+          accessibilityHint="Press the button to proceed to update first name details"
+          accessibilityRole="button">
+          <Text>Update First Name</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => this.updateLastName()}
+          style={styles.buttonStyle}
+          accessibilityLabel="Update last name"
+          accessibilityHint="Press the button to proceed to update last name details"
+          accessibilityRole="button">
+          <Text>Update Last Name</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => this.updateEmail()}
+          style={styles.buttonStyle}
+          accessibilityLabel="Update email"
+          accessibilityHint="Press the button to proceed to update email details"
+          accessibilityRole="button">
+          <Text>Update Email</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => this.updatePassword()}
+          style={styles.buttonStyle}
+          accessibilityLabel="Update password"
+          accessibilityHint="Press the button to proceed to update password details"
+          accessibilityRole="button">
+          <Text>Update Password</Text>
         </TouchableOpacity>
       </View>
     );
@@ -160,6 +369,7 @@ class ClientProfile extends Component {
       xAuth: formattedXAuth,
       userID: formattedUserId,
     });
+    this.getProfile();
     console.log(
       '[SUCCESS] logged Loaded data from user ID: ' +
         this.state.userID +
@@ -168,26 +378,21 @@ class ClientProfile extends Component {
     );
   }
 }
-
+//CSS styling sheet used throught the app to supply a consistent theme and improve user experience
 const styles = StyleSheet.create({
   mainView: {
     flex: 1,
     flexDirection: 'column',
-
     backgroundColor: '#101010',
-
     color: 'white',
-
     fontSize: 12,
   },
-
   displayPhotoStyle: {
     alignSelf: 'center',
   },
 
   textStyle: {
     color: 'white',
-    //padding: 10,
     marginLeft: 10,
     marginTop: 5,
     marginBottom: 20,
@@ -200,10 +405,8 @@ const styles = StyleSheet.create({
   },
   loggedTextStyle: {
     color: 'white',
-    //padding: 10,
     marginLeft: 10,
     marginTop: 5,
-    //marginBottom: 20,
     marginRight: 10,
     borderColor: 'white',
     borderRadius: 20,
@@ -219,7 +422,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     borderRadius: 3,
     elevation: 2,
-    marginTop: 10,
+    marginTop: 5,
     height: 40,
     color: 'white',
   },
@@ -236,55 +439,8 @@ const styles = StyleSheet.create({
   },
   inputHead: {
     fontWeight: 'bold',
-    //textAlign: 'center',
     color: 'white',
   },
 });
-// const styles = StyleSheet.create({
-//   pageLay: {
-//     flex: 1,
-//     flexDirection: 'column',
-//     backgroundColor: '#ffffff',
-//   },
-//   buttons: {
-//     alignItems: 'center',
-//     backgroundColor: '#0070FF',
-//     padding: 10,
-//     marginLeft: 100,
-//     marginRight: 100,
-//     borderRadius: 3,
-//     elevation: 2,
-//   },
-//   inputText: {
-//     alignItems: 'center',
-//     padding: 10,
-//     marginLeft: 100,
-//     marginTop: 10,
-//     marginBottom: 10,
-//     marginRight: 100,
-//     borderColor: '#34495E',
-//     borderRadius: 5,
-//     borderWidth: 1.5,
-//     backgroundColor: '#ffffff',
-//     elevation: 3,
-//   },
-//   baseText: {
-//     alignItems: 'center',
-//     fontSize: 12,
-//     marginBottom: 5,
-//   },
-//   pageTitle: {
-//     alignItems: 'center',
-//     marginLeft: 125,
-//     fontSize: 30,
-//     marginBottom: 10,
-//   },
-//   errorMessage: {
-//     marginTop: 10,
-//     textAlign: 'center',
-//     fontSize: 15,
-//     color: 'red',
-//   },
-// });
 
-export default ClientProfile;
+export default UpdateClientProfile;

@@ -26,7 +26,6 @@ class SearchUserScreen extends Component {
       this.loadSearchedUser();
     });
     this.loadSearchedUser();
-    //this.state.loggedOn = false;
   }
   viewFollowers() {
     return fetch(
@@ -52,12 +51,8 @@ class SearchUserScreen extends Component {
   async loadSearchedUser() {
     const currentUserId = await AsyncStorage.getItem('searchID');
     const formattedUserId = await JSON.parse(currentUserId);
-    //const xAuthKey = await AsyncStorage.getItem('xAuth');
-    //const formattedXAuth = await JSON.parse(xAuthKey);
     this.setState({
-      //xAuth: formattedXAuth,
       userID: formattedUserId,
-      //userID: currentUserId,
     });
     this.getProfile();
     console.log(
@@ -75,12 +70,9 @@ class SearchUserScreen extends Component {
       .then(response => response.json())
       .then(responseJson => {
         this.setState({
-          //firstName: responseJson.given_name,
-          //lastName: responseJson.family_name,
           profileInfo: responseJson,
         });
         this.viewFollowers();
-        //console.log(profileInfo)
       })
       .catch(error => {
         console.log('Error = ' + error);
@@ -108,7 +100,6 @@ class SearchUserScreen extends Component {
         <View>
           <FlatList
             data={this.state.followerInfo}
-            //style={styles.chitList}
             renderItem={({item}) => (
               <Text style={styles.chitItem}>
                 <Text style={styles.chitList}>
@@ -124,26 +115,15 @@ class SearchUserScreen extends Component {
     );
   }
 }
-
+//CSS styling sheet used throught the app to supply a consistent theme and improve user experience
 const styles = StyleSheet.create({
   mainView: {
     flex: 1,
-
-    // Set content's vertical alignment.
-    //justifyContent: 'center',
-
-    // Set content's horizontal alignment.
-    //alignItems: 'center',
     flexDirection: 'column',
-
-    // Set hex color code here.
     backgroundColor: '#101010',
-
     color: 'white',
-
     fontSize: 12,
   },
-
   displayPhotoStyle: {
     alignSelf: 'center',
     paddingTop: 10,
@@ -157,13 +137,11 @@ const styles = StyleSheet.create({
   },
   chitList: {
     fontSize: 15,
-    //color: 'white',
     marginBottom: 5,
   },
 
   textStyle: {
     color: 'white',
-    //padding: 10,
     marginLeft: 10,
     marginTop: 5,
     marginBottom: 20,
@@ -176,7 +154,6 @@ const styles = StyleSheet.create({
   },
   loggedTextStyle: {
     color: 'white',
-    //padding: 10,
     marginLeft: 10,
     marginTop: 5,
     marginBottom: 20,
@@ -213,7 +190,6 @@ const styles = StyleSheet.create({
   },
   inputHead: {
     fontWeight: 'bold',
-    //textAlign: 'center',
     color: 'white',
   },
 });
