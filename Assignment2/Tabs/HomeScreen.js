@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {FlatList, StyleSheet, Text, View} from 'react-native';
+import {FlatList, StyleSheet, Text, View, Image} from 'react-native';
 
 class HomeScreen extends Component {
   constructor(props) {
@@ -46,10 +46,34 @@ class HomeScreen extends Component {
                 {item.chit_content}
                 {'\n'}
               </Text>
-              <Text style={styles.chitDate}>
+              {/* <Text style={styles.chitDate}>
                 Date posted {new Date(item.timestamp).toLocaleString()}
-                {'\n'}lang: long:
-              </Text>
+              </Text> */}
+              <Image
+                source={{
+                  uri:
+                    'http://10.0.2.2:3333/api/v0.0.5/chits/' +
+                    item.chit_id +
+                    '/photo',
+                }}
+                style={styles.chitPic}
+              />
+              {'\n'}
+              {'\n'}
+              {'\n'}
+              {'\n'}
+              {item.location == null ? (
+                <Text style={styles.chitDate}>
+                  Date posted {new Date(item.timestamp).toLocaleString()}
+                </Text>
+              ) : (
+                <Text style={styles.chitDate}>
+                  Date posted {new Date(item.timestamp).toLocaleString()}
+                  {'\n'}lat: {item.location.latitude} long:{' '}
+                  {item.location.longitude}
+                </Text>
+              )}
+              {'\n'}
             </Text>
           )}
           keyExtractor={({chitid}, mainKey) => chitid}
@@ -83,6 +107,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     color: 'white',
+  },
+  chitPic: {
+    width: 200,
+    height: 100,
   },
   chitItem: {
     margin: 3,

@@ -73,7 +73,7 @@ class ChittPhoto extends Component {
 
       console.log('URI of the photo: ' + data.uri);
 
-      return fetch('http://10.0.2.2:3333/api/v0.0.5/chits/32/photo', {
+      return fetch('http://10.0.2.2:3333/api/v0.0.5/chits/43/photo', {
         method: 'POST',
         body: data,
         headers: {
