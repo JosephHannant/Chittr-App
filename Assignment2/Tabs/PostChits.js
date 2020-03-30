@@ -180,6 +180,19 @@ class PostChitsScreen extends Component {
     );
   }
 
+  async storeLoggedUser() {
+    try {
+      await AsyncStorage.setItem('userID', JSON.stringify(this.state.userID));
+      await AsyncStorage.setItem('xAuth', JSON.stringify(this.state.xAuth));
+      let userIDC = await AsyncStorage.getItem('userID');
+      let xAuthC = await AsyncStorage.getItem('xAuth');
+
+      console.log('user = ' + userIDC + ' auth = ' + xAuthC);
+    } catch (error) {
+      console.log('Error = ' + error);
+    }
+  }
+
   getProfile = () => {
     if (this.state.xAuth === null) {
       this.state.loggedOn = false;
@@ -217,6 +230,8 @@ class PostChitsScreen extends Component {
 
   postChit() {
     var date = Date.parse(new Date());
+    console.log(date);
+    console.log(JSON.stringify(date));
     if (this.state.chitPack.length > 141) {
       Alert.alert('Chit is too long please shorten it');
     } else {
@@ -245,7 +260,7 @@ class PostChitsScreen extends Component {
               if (response.status === 201) {
                 Alert.alert('Chit posted, returned to home');
                 console.log('Chit included location data');
-                this.props.navigation.goBack();
+                this.props.navigation.navigate('Home');
               } else {
                 Alert.alert('Failed to post, you are not logged in');
               }
@@ -267,6 +282,7 @@ class PostChitsScreen extends Component {
             },
           })
             .then(response => {
+              //console.log(response);
               if (response.status === 201) {
                 Alert.alert('Chit posted successfully');
                 console.log('No location data was added');

@@ -3,8 +3,7 @@ import {StyleSheet, TouchableOpacity, Text, View} from 'react-native';
 import {RNCamera} from 'react-native-camera';
 import AsyncStorage from '@react-native-community/async-storage';
 
-// Component consists of the ability to take a picture and upload it as the users' profile image.
-class ChangePictureScreen extends Component {
+class UpdateDisplayPhoto extends Component {
   constructor(props) {
     super(props);
 
@@ -14,7 +13,6 @@ class ChangePictureScreen extends Component {
     };
   }
 
-  // Contains large camera view and a button to take a picture.
   render() {
     return (
       <View style={styles.mainView} accessible={true}>
@@ -31,8 +29,8 @@ class ChangePictureScreen extends Component {
         <TouchableOpacity
           onPress={this.takePicture.bind(this)}
           style={styles.buttonStyle}
-          accessibilityLabel="Change Profile Picture"
-          accessibilityHint="Press the button to change your profile picture"
+          accessibilityLabel="Change display photo"
+          accessibilityHint="Activate button to take a photo to replace the current photo for the account"
           accessibilityRole="button">
           <Text>Take Picture</Text>
         </TouchableOpacity>
@@ -60,9 +58,9 @@ class ChangePictureScreen extends Component {
       userID: parsedUserId,
     });
     console.log(
-      '[DEBUG] Loaded data from user ID: ' +
+      'Logged user: ' +
         this.state.userID +
-        ' and x-auth: ' +
+        ' with Xauthorization code: ' +
         this.state.xAuth,
     );
   }
@@ -70,7 +68,7 @@ class ChangePictureScreen extends Component {
   // This takes the photo and uploads it to the server to ammend the users display photo
   takePicture = async () => {
     if (this.camera) {
-      const settings = {quality: 0.5, base64: true};
+      const settings = {quality: 2, base64: true};
       const data = await this.camera.takePictureAsync(settings);
 
       console.log('URI of the photo: ' + data.uri);
@@ -88,7 +86,7 @@ class ChangePictureScreen extends Component {
           console.log('Photo taken, response code: ' + response.status);
         })
         .catch(error => {
-          console.error('[ERROR] Error taking picture. Log: ' + error);
+          console.error('A problem occurred taking the photo: ' + error);
         });
     }
   };
@@ -98,7 +96,7 @@ const styles = StyleSheet.create({
   mainView: {
     flex: 1,
     flexDirection: 'column',
-    marginTop: 10,
+    marginTop: 5,
     backgroundColor: '#010101',
   },
   buttonStyle: {
@@ -120,11 +118,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     fontSize: 30,
   },
-  preview: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
   photoStyle: {
     flex: 0,
     padding: 250,
@@ -135,4 +128,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ChangePictureScreen;
+export default UpdateDisplayPhoto;
