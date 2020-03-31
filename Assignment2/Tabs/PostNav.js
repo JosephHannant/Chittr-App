@@ -2,8 +2,9 @@ import React, {Component} from 'react';
 import {View, Text} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-//import Camera from './Camera';
+import Camera from './Camera';
 import Posting from './PostChits';
+import PostH from './PostHome';
 
 const Pages = createStackNavigator();
 
@@ -13,9 +14,11 @@ function PostNav() {
   return (
     <NavigationContainer>
       <Pages.Navigator
-        initialRouteName="Post"
+        initialRouteName="PostH"
         screenOptions={{headerShown: true}}>
+        <Pages.Screen name="PostH" component={PostH} />
         <Pages.Screen name="Post" component={Posting} />
+        <Pages.Screen name="Cam" component={Camera} />
       </Pages.Navigator>
     </NavigationContainer>
   );

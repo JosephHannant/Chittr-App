@@ -112,7 +112,7 @@ class ChittPhoto extends Component {
         },
       )
         .then(response => {
-          this.props.navigation.navigate('UpdateAccount');
+          this.props.navigation.goBack();
           console.log('Photo taken, response code: ' + response.status);
         })
         .catch(error => {

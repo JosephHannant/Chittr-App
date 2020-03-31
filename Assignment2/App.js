@@ -6,16 +6,17 @@ import SettingsPor from './Tabs/UserProfileNav';
 import Postpor from './Tabs/PostChits';
 import Camera from './Tabs/Camera';
 import SearchUsers from './Tabs/SearchUsers';
+import PostNav from './Tabs/PostNav';
 const NavigationPortal = createBottomTabNavigator({
   Home: {
     screen: HomeScr,
   },
   Post: {
-    screen: Postpor,
+    screen: PostNav,
   },
-  Camera: {
-    screen: Camera,
-  },
+  // Camera: {
+  //   screen: Camera,
+  // },
   Search: {
     screen: SearchUsers,
   },
