@@ -26,6 +26,7 @@ class PostChitsScreen extends Component {
       latitude: null,
       locationPermission: false,
       chitLocation: false,
+      chitID: '',
     };
   }
 
@@ -133,7 +134,7 @@ class PostChitsScreen extends Component {
           <Text>Post</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => this.cameraNav()}
+          onPress={() => this.chitToCamera()}
           style={styles.buttonStyle}
           accessibilityLabel="Create acount navigation"
           accessibilityHint="Press the button to proceed to the create account screen"
@@ -193,6 +194,17 @@ class PostChitsScreen extends Component {
     }
   }
 
+  async storeChitID() {
+    try {
+      await AsyncStorage.setItem('chitID', JSON.stringify(this.state.chitID));
+      let chitIDC = await AsyncStorage.getItem('chitID');
+
+      console.log('Chit before sent = ' + chitIDC);
+    } catch (error) {
+      console.log('Error = ' + error);
+    }
+  }
+
   getProfile = () => {
     if (this.state.xAuth === null) {
       this.state.loggedOn = false;
@@ -228,6 +240,18 @@ class PostChitsScreen extends Component {
     this.findCoordinates();
   }
 
+  delayTransition = () => {
+    setTimeout(function() {
+      //Put All Your Code Here, Which You Want To Execute After Some Delay Time.
+      Alert.alert('Go to camera screen to attach a photo to the chit');
+    }, 100);
+  };
+
+  chitToCamera() {
+    this.postChit();
+    this.delayTransition();
+  }
+
   postChit() {
     var date = Date.parse(new Date());
     console.log(date);
@@ -260,10 +284,18 @@ class PostChitsScreen extends Component {
               if (response.status === 201) {
                 Alert.alert('Chit posted, returned to home');
                 console.log('Chit included location data');
-                this.props.navigation.navigate('Home');
+                //this.props.navigation.navigate('Home');
               } else {
                 Alert.alert('Failed to post, you are not logged in');
               }
+              return response.json();
+            })
+            .then(responseJson => {
+              this.setState({
+                chitID: JSON.stringify(responseJson.chit_id),
+              });
+              console.log('Chit ID is: ' + this.state.chitID);
+              this.storeChitID();
             })
             .catch(error => {
               console.error(error);
@@ -286,10 +318,18 @@ class PostChitsScreen extends Component {
               if (response.status === 201) {
                 Alert.alert('Chit posted successfully');
                 console.log('No location data was added');
-                this.props.navigation.goBack();
+                //this.props.navigation.goBack();
               } else {
                 Alert.alert('Failed to post, you are not logged in');
               }
+              return response.json();
+            })
+            .then(responseJson => {
+              this.setState({
+                chitID: JSON.stringify(responseJson.chit_id),
+              });
+              console.log('Chit ID is: ' + this.state.chitID);
+              this.storeChitID();
             })
             .catch(error => {
               console.error(error);

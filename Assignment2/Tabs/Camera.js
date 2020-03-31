@@ -10,6 +10,8 @@ class ChittPhoto extends Component {
     this.state = {
       userID: '',
       xAuth: '',
+      chitID: '',
+      chitIDInc: '',
     };
   }
 
@@ -47,6 +49,23 @@ class ChittPhoto extends Component {
     this.loadLoggedUser();
   }
 
+  async loadChitID() {
+    const currentChitId = await AsyncStorage.getItem('chitID');
+    const formattedChitId = await JSON.parse(currentChitId);
+    this.setState({
+      chitID: formattedChitId,
+    });
+    console.log('Loaded chit ID: ' + this.state.chitID);
+  }
+
+  getChit() {
+    this.setState({
+      chitID: '',
+    });
+    this.loadChitID();
+    console.log('Camera screen chit ID: ' + this.state.chitID);
+  }
+
   // Async to load the credentials of the current logged in user
   async loadLoggedUser() {
     let userId = await AsyncStorage.getItem('userID');
@@ -63,6 +82,7 @@ class ChittPhoto extends Component {
         ' with Xauthorization code: ' +
         this.state.xAuth,
     );
+    this.getChit();
   }
 
   // This takes the photo and uploads it to the server to ammend the users display photo
@@ -70,17 +90,27 @@ class ChittPhoto extends Component {
     if (this.camera) {
       const settings = {quality: 2, base64: true};
       const data = await this.camera.takePictureAsync(settings);
+      this.loadChitID();
 
-      console.log('URI of the photo: ' + data.uri);
+      console.log(
+        'URI of the photo: ' + data.uri + ' Chit ID: ' + this.state.chitID,
+      );
+      this.setState({
+        chitIDInc: this.state.chitID + 1,
+      });
+      console.log('ChitIDInc: ' + this.state.chitIDInc);
 
-      return fetch('http://10.0.2.2:3333/api/v0.0.5/chits/43/photo', {
-        method: 'POST',
-        body: data,
-        headers: {
-          'Content-Type': 'image/jpeg',
-          'X-Authorization': JSON.parse(this.state.xAuth),
+      return fetch(
+        'http://10.0.2.2:3333/api/v0.0.5/chits/' + this.state.chitID + '/photo',
+        {
+          method: 'POST',
+          body: data,
+          headers: {
+            'Content-Type': 'image/jpeg',
+            'X-Authorization': JSON.parse(this.state.xAuth),
+          },
         },
-      })
+      )
         .then(response => {
           this.props.navigation.navigate('UpdateAccount');
           console.log('Photo taken, response code: ' + response.status);

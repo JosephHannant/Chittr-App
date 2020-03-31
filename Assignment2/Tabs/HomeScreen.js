@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {FlatList, StyleSheet, Text, View, Image} from 'react-native';
+import {Avatar} from 'react-native-elements';
 
 class HomeScreen extends Component {
   constructor(props) {
@@ -86,8 +87,8 @@ class HomeScreen extends Component {
 const styles = StyleSheet.create({
   mainView: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    //justifyContent: 'center',
+    //alignItems: 'center',
     backgroundColor: '#101010',
   },
   chitList: {
@@ -109,8 +110,8 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   chitPic: {
-    width: 200,
-    height: 100,
+    width: 100,
+    height: 120,
   },
   chitItem: {
     margin: 3,
@@ -118,9 +119,14 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: '#DCDCDC',
     elevation: 1,
+    //width: 350,
   },
   chitHeader: {
     fontWeight: 'bold',
+  },
+  displayPhotoStyle: {
+    alignSelf: 'center',
+    paddingTop: 10,
   },
 });
 export default HomeScreen;
