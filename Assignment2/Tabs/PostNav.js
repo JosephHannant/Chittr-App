@@ -5,6 +5,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import Camera from './Camera';
 import Posting from './PostChits';
 import PostH from './PostHome';
+import Drafts from './Draft/Draft'
 
 const Pages = createStackNavigator();
 
@@ -19,6 +20,7 @@ function PostNav() {
         <Pages.Screen name="PostH" component={PostH} />
         <Pages.Screen name="Post" component={Posting} />
         <Pages.Screen name="Cam" component={Camera} />
+        <Pages.Screen name="Drafts" component={Drafts} />
       </Pages.Navigator>
     </NavigationContainer>
   );

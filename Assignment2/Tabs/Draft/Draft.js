@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import {FlatList, StyleSheet, Text, View, Image} from 'react-native';
-import {Avatar} from 'react-native-elements';
+import {FlatList, StyleSheet, Text, View} from 'react-native';
 
 class HomeScreen extends Component {
   constructor(props) {
@@ -18,7 +17,7 @@ class HomeScreen extends Component {
   }
 
   getData() {
-    return fetch('http://10.0.2.2:3333/api/v0.0.5/chits?start=0&count=100')
+    return fetch('http://10.0.2.2:3333/api/v0.0.5/chits?start=0&count=50')
       .then(response => response.json())
       .then(responsejson => {
         this.setState({
@@ -39,42 +38,7 @@ class HomeScreen extends Component {
           //style={styles.chitList}
           renderItem={({item}) => (
             <Text style={styles.chitItem}>
-              <Text style={styles.chitHeader}>
-                {item.user.given_name} {item.user.family_name}
-              </Text>
-              <Text> chitt'd {'\n'}</Text>
-              <Text style={styles.chitList}>
-                {item.chit_content}
-                {'\n'}
-              </Text>
-              {/* <Text style={styles.chitDate}>
-                Date posted {new Date(item.timestamp).toLocaleString()}
-              </Text> */}
-              <Image
-                source={{
-                  uri:
-                    'http://10.0.2.2:3333/api/v0.0.5/chits/' +
-                    item.chit_id +
-                    '/photo',
-                }}
-                style={styles.chitPic}
-              />
-              {'\n'}
-              {'\n'}
-              {'\n'}
-              {'\n'}
-              {item.location == null ? (
-                <Text style={styles.chitDate}>
-                  Date posted {new Date(item.timestamp).toLocaleString()}
-                </Text>
-              ) : (
-                <Text style={styles.chitDate}>
-                  Date posted {new Date(item.timestamp).toLocaleString()}
-                  {'\n'}lat: {item.location.latitude} long:{' '}
-                  {item.location.longitude}
-                </Text>
-              )}
-              {'\n'}
+              <Text style={styles.chitList}>{item.chit_content}</Text>
             </Text>
           )}
           keyExtractor={({chitid}) => chitid}

@@ -1,11 +1,9 @@
 import React, {Component} from 'react';
 import {
-  Image,
   Text,
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  Button,
   View,
   Alert,
 } from 'react-native';
@@ -19,12 +17,9 @@ class ClientProfile extends Component {
       email: '',
       password: '',
       userID: null,
-      firstName: '',
-      lastName: '',
       xAuth: null,
       loggedOn: false,
       profileInfo: [],
-      dPhoto: null,
     };
   }
   //These get and set the value of the inputs from the text box and store it in a variable
@@ -258,7 +253,7 @@ class ClientProfile extends Component {
     });
     this.getProfile();
     console.log(
-      '[SUCCESS] logged Loaded data from user ID: ' +
+      'Loaded logged userID: ' +
         this.state.userID +
         ' and x-auth: ' +
         this.state.xAuth,

@@ -49,6 +49,14 @@ class PostHomeScreen extends Component {
           accessibilityRole="button">
           <Text>Camera screen</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => this.props.navigation.navigate('Drafts')}
+          style={styles.buttonStyle}
+          accessibilityLabel="Create acount navigation"
+          accessibilityHint="Press the button to proceed to the create account screen"
+          accessibilityRole="button">
+          <Text>Drafts screen</Text>
+        </TouchableOpacity>
       </View>
     );
   }
