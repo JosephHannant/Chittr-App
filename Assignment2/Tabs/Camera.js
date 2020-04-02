@@ -11,7 +11,6 @@ class ChittPhoto extends Component {
       userID: '',
       xAuth: '',
       chitID: '',
-      chitIDInc: '',
     };
   }
 
@@ -95,10 +94,6 @@ class ChittPhoto extends Component {
       console.log(
         'URI of the photo: ' + data.uri + ' Chit ID: ' + this.state.chitID,
       );
-      this.setState({
-        chitIDInc: this.state.chitID + 1,
-      });
-      console.log('ChitIDInc: ' + this.state.chitIDInc);
 
       return fetch(
         'http://10.0.2.2:3333/api/v0.0.5/chits/' + this.state.chitID + '/photo',

@@ -1,43 +1,46 @@
 import React, {Component} from 'react';
 import {
-  CheckBox,
-  PermissionsAndroid,
-  StyleSheet,
-  Alert,
-  TouchableOpacity,
-  TextInput,
   Text,
+  TextInput,
+  CheckBox,
   View,
+  Button,
+  TouchableOpacity,
+  PermissionsAndroid,
+  Alert,
+  FlatList,
+  StyleSheet,
 } from 'react-native';
-import Geolocation from 'react-native-geolocation-service';
 import AsyncStorage from '@react-native-community/async-storage';
+import Geolocation from 'react-native-geolocation-service';
 
-class PostChitsScreen extends Component {
+class DraftView extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      userID: '',
+      selectedDraft: '',
       xAuth: '',
+      userID: '',
+      loggedID: '',
+      loggedAuth: '',
+      finalChit: '',
+      delayedChit: '',
       profileInfo: [],
-      chitPack: '',
-      photo: null,
       longitude: null,
       latitude: null,
       locationPermission: false,
       chitLocation: false,
-      chitID: '',
     };
   }
-
-  cameraNav = () => {
-    this.props.navigation.navigate('Camera');
-  };
-  manageChitData = text => {
-    this.setState({
-      chitPack: text,
+  componentDidMount() {
+    this.takeFocus = this.props.navigation.addListener('willFocus', () => {
+      this.loadSelectedDraft();
+      this.findCoordinates();
     });
-  };
+    this.loadSelectedDraft();
+    this.findCoordinates();
+  }
+
   findCoordinates = () => {
     if (!this.state.locationPermission) {
       this.state.locationPermission = this.requestLocationPermission();
@@ -89,70 +92,6 @@ class PostChitsScreen extends Component {
     }
   };
 
-  render() {
-    return (
-      <View accessible={true} style={styles.mainView}>
-        <Text style={styles.detailStyle}>
-          {'Current user: '}
-          {this.state.userID}
-          {'\n'}
-          {"User's name: "}
-          {this.state.profileInfo.given_name}{' '}
-          {this.state.profileInfo.family_name}
-        </Text>
-        <TextInput
-          style={styles.textStyle}
-          placeholder="Compose a Chit..."
-          placeholderTextColor="white"
-          onChangeText={this.manageChitData}
-          multiline
-          numberOfLines={5}
-          maxLength={141}
-          accessibilityLabel="Chit Content"
-          accessibilityHint="Enter chit content here"
-          accessibilityRole="keyboardkey"
-        />
-        <CheckBox
-          center
-          title="Add Geotag"
-          titleStyle={styles.textStyle}
-          value={this.state.chitLocation}
-          onValueChange={() =>
-            this.setState({chitLocation: !this.state.chitLocation})
-          }
-          accessibilityLabel="Add Geotag"
-          accessibilityHint="Select this checkbox to add a geotag to your chit"
-          accessibilityRole="checkbox"
-        />
-        <Text style={styles.chitText}>Add location?</Text>
-        <TouchableOpacity
-          onPress={() => this.postChit()}
-          style={styles.buttonStyle}
-          accessibilityLabel="Post Chit"
-          accessibilityHint="Press the button to post the chit"
-          accessibilityRole="button">
-          <Text>Post</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => this.chitToCamera()}
-          style={styles.buttonStyle}
-          accessibilityLabel="Create acount navigation"
-          accessibilityHint="Press the button to proceed to the create account screen"
-          accessibilityRole="button">
-          <Text>Camera</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => this.draftSave()}
-          style={styles.buttonStyle}
-          accessibilityLabel="Save to drafts"
-          accessibilityHint="Press the button to save the chit to your drafts"
-          accessibilityRole="button">
-          <Text>Save to Drafts</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
   async loadLoggedUser() {
     const currentUserId = await AsyncStorage.getItem('userID');
     const formattedUserId = await JSON.parse(currentUserId);
@@ -162,7 +101,6 @@ class PostChitsScreen extends Component {
       xAuth: formattedXAuth,
       userID: formattedUserId,
     });
-    this.getProfile();
     console.log(
       'Loaded data from user ID: ' +
         this.state.userID +
@@ -171,18 +109,13 @@ class PostChitsScreen extends Component {
     );
   }
 
-  // async storeLoggedUser() {
-  //   try {
-  //     await AsyncStorage.setItem('userID', JSON.stringify(this.state.userID));
-  //     await AsyncStorage.setItem('xAuth', JSON.stringify(this.state.xAuth));
-  //     let userIDC = await AsyncStorage.getItem('userID');
-  //     let xAuthC = await AsyncStorage.getItem('xAuth');
-
-  //     console.log('user = ' + userIDC + ' auth = ' + xAuthC);
-  //   } catch (error) {
-  //     console.log('Error = ' + error);
-  //   }
-  // }
+  delayTransmition = () => {
+    let sentChit = this.state.delayedChit;
+    setTimeout(function() {
+      //this.state.finalChit = sentChit;
+      this.postChit();
+    }, 1000);
+  };
 
   async storeChitID() {
     try {
@@ -195,103 +128,86 @@ class PostChitsScreen extends Component {
     }
   }
 
-  async draftSave() {
-    if (this.state.chitPack !== '') {
-      try {
-        let currentDrafts = await AsyncStorage.getItem('chitDrafts');
-
-        if (currentDrafts !== null) {
-          let formattedDrafts = JSON.parse(currentDrafts);
-          await AsyncStorage.removeItem('chitDrafts');
-          const addedDraft = [
-            {
-              chitPack: this.state.chitPack,
-            },
-          ];
-          let updatedDrafts = formattedDrafts.concat(addedDraft);
-          await AsyncStorage.setItem(
-            'chitDrafts',
-            JSON.stringify(updatedDrafts),
-          );
-        } else {
-          const currentDrafts = [
-            {
-              chitPack: this.state.chitPack,
-            },
-          ];
-          await AsyncStorage.setItem(
-            'chitDrafts',
-            JSON.stringify(currentDrafts),
-          );
-        }
-        Alert.alert('Chit saved to drafts');
-        let chitIDC = await AsyncStorage.getItem('chitDrafts');
-
-        console.log('Chit before sent = ' + chitIDC);
-      } catch (error) {
-        console.log('Error = ' + error);
-      }
-    } else {
-      Alert.alert('No chit was entered');
-    }
-  }
-
-  getProfile = () => {
-    if (this.state.xAuth === null) {
-      this.state.loggedOn = false;
-    } else {
-      this.state.loggedOn = true;
-    }
-    return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.userID, {
-      method: 'GET',
-    })
-      .then(response => response.json())
-      .then(responseJson => {
-        this.setState({
-          profileInfo: responseJson,
-        });
-        console.log(
-          'First name is ' +
-            this.state.profileInfo.given_name +
-            ', Last name is ' +
-            this.state.profileInfo.family_name,
-        );
-      })
-      .catch(error => {
-        console.log('Error = ' + error);
-      });
-  };
-
-  componentDidMount() {
-    this.takeFocus = this.props.navigation.addListener('willFocus', () => {
-      this.loadLoggedUser();
-      this.findCoordinates();
+  async loadSelectedDraft() {
+    const currentDraft = await AsyncStorage.getItem('selecChit');
+    const formattedDraft = await JSON.parse(currentDraft);
+    //const xAuthKey = await AsyncStorage.getItem('xAuth');
+    //const formattedXAuth = await JSON.parse(xAuthKey);
+    this.setState({
+      //xAuth: formattedXAuth,
+      selectedDraft: formattedDraft,
+      finalChit: formattedDraft,
+      //userID: currentUserId,
     });
     this.loadLoggedUser();
-    this.findCoordinates();
+    console.log('Loaded data from user ID: ' + this.state.selectedDraft);
   }
 
-  delayTransition = () => {
-    setTimeout(function() {
-      //Put All Your Code Here, Which You Want To Execute After Some Delay Time.
-      Alert.alert('Go to camera screen to attach a photo to the chit');
-    }, 100);
+  viewText = text => {
+    this.setState({
+      finalChit: text,
+    });
   };
 
-  chitToCamera() {
-    this.postChit();
-    this.delayTransition();
+  consoleText = () => {
+    console.log(this.state.finalChit);
+  };
+
+  render() {
+    return (
+      <View style={styles.mainView}>
+        <View>
+          <TextInput
+            style={styles.textStyle}
+            onChangeText={this.viewText}
+            defaultValue={this.state.selectedDraft}
+            multiline
+            numberOfLines={5}
+            maxLength={141}
+          />
+          <CheckBox
+            center
+            title="Add Geotag"
+            titleStyle={styles.textStyle}
+            value={this.state.chitLocation}
+            onValueChange={() =>
+              this.setState({chitLocation: !this.state.chitLocation})
+            }
+            accessibilityLabel="Add Geotag"
+            accessibilityHint="Select this checkbox to add a geotag to your chit"
+            accessibilityRole="checkbox"
+          />
+          <Text style={styles.chitText}>Add location?</Text>
+          <TouchableOpacity
+            onPress={() => this.postChit()}
+            style={styles.buttonStyle}
+            accessibilityLabel="Follow"
+            accessibilityHint="Press to follow user"
+            accessibilityRole="button">
+            <Text>Post</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => this.delayTransmition()}
+            style={styles.buttonStyle}
+            accessibilityLabel="Follow"
+            accessibilityHint="Press to follow user"
+            accessibilityRole="button">
+            <Text>Schedule</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
   }
 
   postChit() {
     var date = Date.parse(new Date());
     console.log(date);
     console.log(JSON.stringify(date));
-    if (this.state.chitPack.length > 141) {
+    if (this.state.finalChit.length > 141) {
       Alert.alert('Chit is too long please shorten it');
     } else {
-      console.log(this.state.chitPack.length);
-      if (this.state.chitPack === '') {
+      console.log(this.state.finalChit.length);
+      if (this.state.finalChit === '') {
         console.log('No chit was input');
       } else {
         if (this.state.chitLocation === true) {
@@ -299,7 +215,7 @@ class PostChitsScreen extends Component {
           return fetch('http://10.0.2.2:3333/api/v0.0.5/chits', {
             method: 'POST',
             body: JSON.stringify({
-              chit_content: this.state.chitPack,
+              chit_content: this.state.finalChit,
               timestamp: date,
               location: {
                 longitude: JSON.parse(this.state.longitude),
@@ -336,7 +252,7 @@ class PostChitsScreen extends Component {
           return fetch('http://10.0.2.2:3333/api/v0.0.5/chits', {
             method: 'POST',
             body: JSON.stringify({
-              chit_content: this.state.chitPack,
+              chit_content: this.state.finalChit,
               timestamp: date,
             }),
             headers: {
@@ -379,26 +295,46 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 12,
   },
+
+  displayPhotoStyle: {
+    alignSelf: 'center',
+    paddingTop: 10,
+  },
+  chitItem: {
+    margin: 3,
+    padding: 20,
+    borderRadius: 20,
+    backgroundColor: '#DCDCDC',
+    elevation: 1,
+  },
+  chitList: {
+    fontSize: 15,
+    marginBottom: 5,
+  },
+
   textStyle: {
     color: 'white',
     marginLeft: 10,
-    marginTop: 20,
+    marginTop: 5,
+    marginBottom: 20,
     marginRight: 10,
     borderColor: 'white',
     borderRadius: 20,
     borderWidth: 1.5,
-    height: 200,
+    height: 80,
     fontSize: 12,
   },
-  detailStyle: {
-    fontWeight: 'bold',
-    textAlign: 'center',
+  loggedTextStyle: {
     color: 'white',
-    fontSize: 18,
-  },
-  chitText: {
-    fontWeight: 'bold',
-    color: 'white',
+    marginLeft: 10,
+    marginTop: 5,
+    marginBottom: 20,
+    marginRight: 10,
+    borderColor: 'white',
+    borderRadius: 20,
+    borderWidth: 1.5,
+    height: 40,
+    fontSize: 12,
   },
   buttonStyle: {
     alignItems: 'center',
@@ -412,5 +348,22 @@ const styles = StyleSheet.create({
     height: 40,
     color: 'white',
   },
+  pageHead: {
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 16,
+  },
+  detailStyle: {
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 18,
+  },
+  chitText: {
+    fontWeight: 'bold',
+    color: 'white',
+  },
 });
-export default PostChitsScreen;
+
+export default DraftView;

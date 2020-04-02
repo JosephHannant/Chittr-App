@@ -1,47 +1,91 @@
 import React, {Component} from 'react';
-import {FlatList, StyleSheet, Text, View} from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Alert,
+} from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
-class HomeScreen extends Component {
+class Drafts extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userData: [],
+      chitDrafts: [],
     };
   }
 
   componentDidMount() {
     this.takeFocus = this.props.navigation.addListener('willFocus', () => {
-      this.getData();
+      this.loadCurrentDrafts();
     });
-    this.getData();
+    this.loadCurrentDrafts();
   }
 
-  getData() {
-    return fetch('http://10.0.2.2:3333/api/v0.0.5/chits?start=0&count=50')
-      .then(response => response.json())
-      .then(responsejson => {
-        this.setState({
-          userData: responsejson,
-        });
-      })
-      .catch(error => {
-        console.log(error);
-      });
+  async loadCurrentDrafts() {
+    //let chitIDC = await AsyncStorage.getItem('chitDrafts');
+    const currentDrafts = await AsyncStorage.getItem('chitDrafts');
+    const formattedDrafts = await JSON.parse(currentDrafts);
+    this.setState({
+      chitDrafts: formattedDrafts,
+    });
+    console.log(
+      'Loaded data from drafts: ' + JSON.stringify(this.state.chitDrafts),
+    );
+  }
+
+  storeSearchID = async chitPack => {
+    try {
+      console.log('Chit data:', chitPack);
+      await AsyncStorage.setItem('selecChit', JSON.stringify(chitPack));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  draftNav = selectedChit => {
+    this.storeSearchID(selectedChit);
+    this.props.navigation.navigate('DraftView');
+  };
+
+  async draftWipe() {
+    try {
+      await AsyncStorage.removeItem('chitDrafts');
+      Alert.alert('All drafts deleted');
+      console.log('All drafts deleted');
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   render() {
     return (
       <View style={styles.mainView}>
-        <Text style={styles.pageHead}> Home Screen </Text>
+        <Text style={styles.pageHead}> View all drafts </Text>
+        <TouchableOpacity
+          onPress={() => this.draftWipe()}
+          style={styles.buttonStyle}
+          accessibilityLabel="Logout"
+          accessibilityHint="Press the button to logout"
+          accessibilityRole="button">
+          <Text>Delete all drafts</Text>
+        </TouchableOpacity>
         <FlatList
-          data={this.state.userData}
+          data={this.state.chitDrafts}
           //style={styles.chitList}
           renderItem={({item}) => (
-            <Text style={styles.chitItem}>
-              <Text style={styles.chitList}>{item.chit_content}</Text>
-            </Text>
+            <TouchableOpacity
+              onPress={() => this.draftNav(item.chitPack)}
+              style={styles.chitItem}
+              accessibilityLabel="Logout"
+              accessibilityHint="Press the button to logout"
+              accessibilityRole="button">
+              <Text>{item.chitPack}</Text>
+            </TouchableOpacity>
           )}
-          keyExtractor={({chitid}) => chitid}
+          keyExtractor={({chitPack}) => chitPack}
         />
       </View>
     );
@@ -85,6 +129,19 @@ const styles = StyleSheet.create({
     elevation: 1,
     //width: 350,
   },
+  buttonStyle: {
+    alignItems: 'center',
+    backgroundColor: '#DCDCDC',
+    padding: 10,
+    marginLeft: 10,
+    marginRight: 10,
+    borderRadius: 3,
+    elevation: 2,
+    marginTop: 10,
+    marginBottom: 10,
+    height: 40,
+    color: 'white',
+  },
   chitHeader: {
     fontWeight: 'bold',
   },
@@ -93,4 +150,4 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
 });
-export default HomeScreen;
+export default Drafts;
