@@ -23,7 +23,7 @@ class UpdateClientProfile extends Component {
       profileInfo: [],
     };
   }
-  //Updates all of the user details and ensures no value is left blank
+
   updateAll = () => {
     console.log(this.state.xAuth);
     if (this.state.upFirstName !== '') {
@@ -75,7 +75,6 @@ class UpdateClientProfile extends Component {
       Alert.alert('No first name entered');
     }
   };
-  //Only updates first name
   updateFirstName = () => {
     console.log(this.state.xAuth);
     if (this.state.upFirstName !== '') {
@@ -112,7 +111,7 @@ class UpdateClientProfile extends Component {
       Alert.alert('No first name entered');
     }
   };
-  //Only updates last name
+
   updateLastName = () => {
     console.log(this.state.xAuth);
     if (this.state.upLastName !== '') {
@@ -149,7 +148,7 @@ class UpdateClientProfile extends Component {
       Alert.alert('No last name entered');
     }
   };
-  //Only updates email
+
   updateEmail = () => {
     console.log(this.state.xAuth);
     if (this.state.upEmail !== '') {
@@ -186,7 +185,7 @@ class UpdateClientProfile extends Component {
       Alert.alert('No Email entered');
     }
   };
-  //Only updates password
+
   updatePassword = () => {
     console.log(this.state.xAuth);
     if (this.state.upPassword !== '') {
@@ -223,11 +222,11 @@ class UpdateClientProfile extends Component {
       Alert.alert('No password entered');
     }
   };
-  //Navigates to the update display photo page
+
   updateDPNav = () => {
     this.props.navigation.navigate('UpdateDP');
   };
-  //Gets the user details
+
   getProfile = () => {
     return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.userID, {
       method: 'GET',
@@ -248,17 +247,17 @@ class UpdateClientProfile extends Component {
         console.log('Error = ' + error);
       });
   };
-  //Runs the specified functions whenever the user navigates to the page
+
   componentDidMount() {
     this.takeFocus = this.props.navigation.addListener('willFocus', () => {
       this.loadLoggedUser();
     });
     this.loadLoggedUser();
   }
-  //Renders the screen
+
   render() {
     return (
-      <View style={styles.pageBase} accessible={true}>
+      <View style={styles.mainView} accessible={true}>
         <Text style={styles.pageHead}>Update Display Photo</Text>
         <View style={styles.displayPhotoStyle}>
           <Avatar
@@ -272,9 +271,6 @@ class UpdateClientProfile extends Component {
                 '/photo?timestamp=' +
                 Date.now(),
             }}
-            accessibilityLabel="Go to display photo update"
-            accessibilityHint="Press to be navigated to the update display photo page"
-            accessibilityRole="imagebutton"
           />
         </View>
 
@@ -294,9 +290,6 @@ class UpdateClientProfile extends Component {
           value={this.state.upFirstName}
           onChangeText={upFirstName => this.setState({upFirstName})}
           type="givenName"
-          accessibilityLabel="First name entry"
-          accessibilityHint="Enter the updated first name here"
-          accessibilityRole="keyboardkey"
         />
 
         <Text style={styles.inputHead}>Last name</Text>
@@ -306,9 +299,6 @@ class UpdateClientProfile extends Component {
           value={this.state.upLastName}
           onChangeText={upLastName => this.setState({upLastName})}
           type="familyName"
-          accessibilityLabel="Last name entry"
-          accessibilityHint="Enter the updated last name here"
-          accessibilityRole="keyboardkey"
         />
 
         <Text style={styles.inputHead}>Email</Text>
@@ -318,9 +308,6 @@ class UpdateClientProfile extends Component {
           value={this.state.upEmail}
           onChangeText={upEmail => this.setState({upEmail})}
           type="emailAddress"
-          accessibilityLabel="Email entry"
-          accessibilityHint="Enter the updated email here"
-          accessibilityRole="keyboardkey"
         />
         <Text style={styles.inputHead}>Password</Text>
         <TextInput
@@ -329,9 +316,6 @@ class UpdateClientProfile extends Component {
           value={this.state.upPassword}
           onChangeText={text => this.setState({upPassword: text})}
           secureTextEntry
-          accessibilityLabel="Password entry"
-          accessibilityHint="Enter the updated password here"
-          accessibilityRole="keyboardkey"
         />
         <TouchableOpacity
           onPress={() => this.updateAll()}
@@ -376,7 +360,6 @@ class UpdateClientProfile extends Component {
       </View>
     );
   }
-  //Loads the current logged user's credentials
   async loadLoggedUser() {
     const currentUserId = await AsyncStorage.getItem('userID');
     const formattedUserId = await JSON.parse(currentUserId);
@@ -388,16 +371,16 @@ class UpdateClientProfile extends Component {
     });
     this.getProfile();
     console.log(
-      'Loaded credentiaals for the logged user, userID: ' +
+      '[SUCCESS] logged Loaded data from user ID: ' +
         this.state.userID +
-        ' and x-Auth: ' +
+        ' and x-auth: ' +
         this.state.xAuth,
     );
   }
 }
 //CSS styling sheet used throught the app to supply a consistent theme and improve user experience
 const styles = StyleSheet.create({
-  pageBase: {
+  mainView: {
     flex: 1,
     flexDirection: 'column',
     backgroundColor: '#101010',

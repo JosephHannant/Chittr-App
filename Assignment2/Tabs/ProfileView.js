@@ -1,5 +1,14 @@
 import React, {Component} from 'react';
-import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
+import {
+  Text,
+  TextInput,
+  View,
+  Button,
+  TouchableOpacity,
+  Alert,
+  FlatList,
+  StyleSheet,
+} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {Avatar} from 'react-native-elements';
 
@@ -13,7 +22,6 @@ class SearchUserScreen extends Component {
       profileInfo: [],
     };
   }
-  //Runs the specified functions whenever the user navigates to the page
   componentDidMount() {
     this.takeFocus = this.props.navigation.addListener('willFocus', () => {
       this.loadSearchedUser();
@@ -21,8 +29,9 @@ class SearchUserScreen extends Component {
     });
     this.loadSearchedUser();
     this.loadLoggedUser();
+    //this.state.loggedOn = false;
   }
-  //Function to follow and account
+
   followAccount() {
     return fetch(
       'http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.userID + '/follow',
@@ -37,9 +46,9 @@ class SearchUserScreen extends Component {
       .then(response => response.json())
       .then(responsejson => {
         console.log(
-          'The user: ' +
+          'The account: ' +
             this.state.loggedID +
-            ' followed user: ' +
+            ' followed account: ' +
             this.state.userID,
         );
         console.log(this.responsejson);
@@ -49,7 +58,7 @@ class SearchUserScreen extends Component {
         console.log(error);
       });
   }
-  //Function to unfollow an account
+
   unfollowAccount() {
     return fetch(
       'http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.userID + '/follow',
@@ -64,9 +73,9 @@ class SearchUserScreen extends Component {
       .then(response => response.json())
       .then(responsejson => {
         console.log(
-          'The user: ' +
+          'The account: ' +
             this.state.loggedID +
-            ' unfollowed user: ' +
+            ' followed account: ' +
             this.state.userID,
         );
         console.log(this.responsejson);
@@ -76,7 +85,7 @@ class SearchUserScreen extends Component {
         console.log(error);
       });
   }
-  //Navigation to follower, following and user chits pages
+
   goToFollowers() {
     this.props.navigation.navigate('UserFollowers');
   }
@@ -88,22 +97,26 @@ class SearchUserScreen extends Component {
   goToUserChits() {
     this.props.navigation.navigate('UserChits');
   }
-  //Loads the user that was selected from the serach screen
+
   async loadSearchedUser() {
     const currentUserId = await AsyncStorage.getItem('searchID');
     const formattedUserId = await JSON.parse(currentUserId);
+    //const xAuthKey = await AsyncStorage.getItem('xAuth');
+    //const formattedXAuth = await JSON.parse(xAuthKey);
     this.setState({
+      //xAuth: formattedXAuth,
       userID: formattedUserId,
+      //userID: currentUserId,
     });
     this.getProfile();
     console.log(
-      'Searched user credentials loaded, userID: ' +
+      '[SUCCESS] Loaded data from user ID: ' +
         this.state.userID +
-        ' and x-Auth: ' +
+        ' and x-auth: ' +
         this.state.xAuth,
     );
   }
-  //Loads the current logged in user
+
   async loadLoggedUser() {
     const currentUserId = await AsyncStorage.getItem('userID');
     const formattedUserId = await JSON.parse(currentUserId);
@@ -114,13 +127,13 @@ class SearchUserScreen extends Component {
       loggedID: formattedUserId,
     });
     console.log(
-      'Logged user credentials loaded, userID: ' +
+      '[SUCCESS] Loaded data from logged user: ' +
         this.state.loggedID +
-        ' and x-Auth: ' +
+        ' and x-auth: ' +
         this.state.loggedAuth,
     );
   }
-  //Loads the profile data for the searched user
+
   getProfile = () => {
     return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.userID, {
       method: 'GET',
@@ -128,17 +141,20 @@ class SearchUserScreen extends Component {
       .then(response => response.json())
       .then(responseJson => {
         this.setState({
+          //firstName: responseJson.given_name,
+          //lastName: responseJson.family_name,
           profileInfo: responseJson,
         });
+        //console.log(profileInfo)
       })
       .catch(error => {
         console.log('Error = ' + error);
       });
   };
-  //Renders the screen
+
   render() {
     return (
-      <View style={styles.pageBase}>
+      <View style={styles.mainView}>
         <View style={styles.viewAvatar}>
           <Avatar
             rounded
@@ -180,7 +196,7 @@ class SearchUserScreen extends Component {
             onPress={() => this.goToFollowers()}
             style={styles.buttonStyle}
             accessibilityLabel="View Followers"
-            accessibilityHint="Press to view user's followers"
+            accessibilityHint="Press to view users followers"
             accessibilityRole="button">
             <Text>View Followers</Text>
           </TouchableOpacity>
@@ -207,7 +223,7 @@ class SearchUserScreen extends Component {
 }
 //CSS styling sheet used throught the app to supply a consistent theme and improve user experience
 const styles = StyleSheet.create({
-  pageBase: {
+  mainView: {
     flex: 1,
     flexDirection: 'column',
     backgroundColor: '#101010',

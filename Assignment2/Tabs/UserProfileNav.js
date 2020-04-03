@@ -7,7 +7,7 @@ import UpdateUserPhoto from './UpdateDP';
 
 const Pages = createStackNavigator();
 
-//Navigation hub for the create and update pages
+//Search User Navigation Code
 
 function ProfileNav() {
   return (

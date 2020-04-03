@@ -18,11 +18,10 @@ class Create extends Component {
       lastName: '',
     };
   }
-  //Navigation to the update screen
   updateNav = () => {
     this.props.navigation.navigate('UpdateAccount');
   };
-  //Function to create a user account
+
   create = () => {
     let res = JSON.stringify({
       given_name: this.state.firstName,
@@ -50,10 +49,10 @@ class Create extends Component {
         console.error(error);
       });
   };
-  //Renders the current screen
+
   render() {
     return (
-      <View style={styles.pageBase}>
+      <View style={styles.mainView}>
         <Text style={styles.pageHead}>Create Screen </Text>
 
         <Text style={styles.inputHead}>First name</Text>
@@ -106,9 +105,9 @@ class Create extends Component {
     );
   }
 }
-//CSS styling sheet used throught the app to supply a consistent theme and improve user experience
+
 const styles = StyleSheet.create({
-  pageBase: {
+  mainView: {
     flex: 1,
     flexDirection: 'column',
     backgroundColor: '#101010',
