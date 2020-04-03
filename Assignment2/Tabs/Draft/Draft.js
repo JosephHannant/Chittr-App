@@ -1,3 +1,7 @@
+/*
+  Author Joseph Hannant
+  This is the screen that deals with displaying and deleting drafts
+*/
 import React, {Component} from 'react';
 import {
   FlatList,

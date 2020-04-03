@@ -1,3 +1,7 @@
+/*
+  Author Joseph Hannant
+  This is the screen that deals with editing and posting drafts
+*/
 import React, {Component} from 'react';
 import {
   Text,

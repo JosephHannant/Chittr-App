@@ -1,5 +1,8 @@
-import React, {Component} from 'react';
-import {View, Text} from 'react-native';
+/*
+  Author Joseph Hannant
+  This is the screen that deals with the navigation of the post pages
+*/
+import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import Camera from './Camera';

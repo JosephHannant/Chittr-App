@@ -1,3 +1,7 @@
+/*
+  Author Joseph Hannant
+  This is the screen that displays the followers of an account
+*/
 import React, {Component} from 'react';
 import {Text, View, FlatList, StyleSheet} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';

@@ -1,3 +1,7 @@
+/*
+  Author Joseph Hannant
+  This is the screen that deals with searching for users
+*/
 import React, {Component} from 'react';
 import {View, FlatList, StyleSheet} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';

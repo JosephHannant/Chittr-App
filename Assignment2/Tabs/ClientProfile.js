@@ -1,3 +1,7 @@
+/*
+  Author Joseph Hannant
+  This is the screen that deals with the login and logout of a user
+*/
 import React, {Component} from 'react';
 import {
   Text,

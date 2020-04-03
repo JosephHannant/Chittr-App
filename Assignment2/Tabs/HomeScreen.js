@@ -1,3 +1,7 @@
+/*
+  Author Joseph Hannant
+  This is the screen that displays all chits
+*/
 import React, {Component} from 'react';
 import {FlatList, StyleSheet, Text, View, Image} from 'react-native';
 

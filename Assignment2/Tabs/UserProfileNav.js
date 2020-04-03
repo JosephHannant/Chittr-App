@@ -1,3 +1,7 @@
+/*
+  Author Joseph Hannant
+  This is the screen that deals with the navigation for the create and update pages
+*/
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';

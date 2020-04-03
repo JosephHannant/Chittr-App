@@ -1,4 +1,8 @@
-import React, {Component} from 'react';
+/*
+  Author Joseph Hannant
+  This is the screen that deals with the navigation of the search pages
+*/
+import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 

@@ -1,3 +1,7 @@
+/*
+  Author Joseph Hannant
+  This is the screen that displays a selected accounts profile
+*/
 import React, {Component} from 'react';
 import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';

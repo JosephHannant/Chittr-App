@@ -1,3 +1,7 @@
+/*
+  Author Joseph Hannant
+  This is the screen that deals with updating the logged in users profile
+*/
 import React, {Component} from 'react';
 import {
   Text,

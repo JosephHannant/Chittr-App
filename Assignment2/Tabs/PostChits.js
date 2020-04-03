@@ -1,3 +1,7 @@
+/*
+  Author Joseph Hannant
+  This is the screen that allows the user to post chits from their accounts
+*/
 import React, {Component} from 'react';
 import {
   CheckBox,

@@ -1,3 +1,7 @@
+/*
+  Author Joseph Hannant
+  This is the screen that provides portals to camera, post and drafts
+*/
 import React, {Component} from 'react';
 import {StyleSheet, TouchableOpacity, Text, View} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
