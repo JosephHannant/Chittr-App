@@ -111,10 +111,13 @@ class DraftView extends Component {
 
   delayTransmition = () => {
 <<<<<<< HEAD
+<<<<<<< HEAD
     Alert.alert('Scheduling was not fully implemented.');
   };
   //Stores the chitID to connect it to the camera
 =======
+=======
+>>>>>>> parent of b681216... V12-cleanup
     let sentChit = this.state.delayedChit;
     setTimeout(function() {
       //this.state.finalChit = sentChit;
@@ -122,6 +125,9 @@ class DraftView extends Component {
     }, 1000);
   };
 
+<<<<<<< HEAD
+>>>>>>> parent of b681216... V12-cleanup
+=======
 >>>>>>> parent of b681216... V12-cleanup
   async storeChitID() {
     try {

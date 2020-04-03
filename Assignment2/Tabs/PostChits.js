@@ -198,6 +198,7 @@ class PostChitsScreen extends Component {
   async draftSave() {
     if (this.state.chitPack !== '') {
 <<<<<<< HEAD
+<<<<<<< HEAD
       this.setState({
         drafter: this.state.chitDrafts,
       });
@@ -207,6 +208,8 @@ class PostChitsScreen extends Component {
       } else {
         this.firstDraft();
 =======
+=======
+>>>>>>> parent of b681216... V12-cleanup
       try {
         let currentDrafts = await AsyncStorage.getItem('chitDrafts');
 
@@ -240,6 +243,9 @@ class PostChitsScreen extends Component {
         console.log('Chit before sent = ' + chitIDC);
       } catch (error) {
         console.log('Error = ' + error);
+<<<<<<< HEAD
+>>>>>>> parent of b681216... V12-cleanup
+=======
 >>>>>>> parent of b681216... V12-cleanup
       }
     } else {
@@ -247,6 +253,7 @@ class PostChitsScreen extends Component {
     }
   }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   async multiDraft(draft) {
     //await this.loadCurrentDrafts();
@@ -284,6 +291,8 @@ class PostChitsScreen extends Component {
     } catch (error) {}
   }
   //Gets the users profile to display on the chit screen
+=======
+>>>>>>> parent of b681216... V12-cleanup
 =======
 >>>>>>> parent of b681216... V12-cleanup
   getProfile = () => {
