@@ -1,14 +1,5 @@
 import React, {Component} from 'react';
-import {
-  Text,
-  TextInput,
-  View,
-  Button,
-  TouchableOpacity,
-  Alert,
-  FlatList,
-  StyleSheet,
-} from 'react-native';
+import {Text, View, FlatList, StyleSheet} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {Avatar} from 'react-native-elements';
 
@@ -21,13 +12,14 @@ class SearchUserScreen extends Component {
       profileInfo: [],
     };
   }
+  //Runs the specified functions whenever the user navigates to the page
   componentDidMount() {
     this.takeFocus = this.props.navigation.addListener('willFocus', () => {
       this.loadSearchedUser();
     });
     this.loadSearchedUser();
-    //this.state.loggedOn = false;
   }
+  //Function to view the selected accounts following list
   viewFollowing() {
     return fetch(
       'http://10.0.2.2:3333/api/v0.0.5/user/' +
@@ -48,7 +40,7 @@ class SearchUserScreen extends Component {
         console.log(error);
       });
   }
-
+  //Loads the searched user
   async loadSearchedUser() {
     const currentUserId = await AsyncStorage.getItem('searchID');
     const formattedUserId = await JSON.parse(currentUserId);
@@ -63,7 +55,7 @@ class SearchUserScreen extends Component {
         this.state.xAuth,
     );
   }
-
+  //Gets the searched accounts profile details
   getProfile = () => {
     return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.userID, {
       method: 'GET',
@@ -79,15 +71,20 @@ class SearchUserScreen extends Component {
         console.log('Error = ' + error);
       });
   };
-
+  //Renders the screen
   render() {
     return (
-      <View style={styles.mainView}>
+      <View style={styles.pageBase}>
         <View style={styles.viewAvatar}>
           <Avatar
             rounded
-            source={{uri: this.state.photo}}
-            onPress={() => this.viewUploadPhoto()}
+            source={{
+              uri:
+                'http://10.0.2.2:3333/api/v0.0.5/user/' +
+                this.state.userID +
+                '/photo?timestamp=' +
+                Date.now(),
+            }}
           />
         </View>
 
@@ -118,7 +115,7 @@ class SearchUserScreen extends Component {
 }
 //CSS styling sheet used throught the app to supply a consistent theme and improve user experience
 const styles = StyleSheet.create({
-  mainView: {
+  pageBase: {
     flex: 1,
     flexDirection: 'column',
     backgroundColor: '#101010',

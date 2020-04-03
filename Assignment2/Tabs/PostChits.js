@@ -27,17 +27,21 @@ class PostChitsScreen extends Component {
       locationPermission: false,
       chitLocation: false,
       chitID: '',
+      chitDrafts: [],
+      drafter: [],
     };
   }
-
+  //Navigates to the camera screen
   cameraNav = () => {
     this.props.navigation.navigate('Camera');
   };
+  //used to ammend the chitPack data to whatever is input into the textbox
   manageChitData = text => {
     this.setState({
       chitPack: text,
     });
   };
+  //Function used to find the users current co-ordinates
   findCoordinates = () => {
     if (!this.state.locationPermission) {
       this.state.locationPermission = this.requestLocationPermission();
@@ -63,7 +67,7 @@ class PostChitsScreen extends Component {
       },
     );
   };
-
+  //Function used to request the users permission to allow the app to access their location
   requestLocationPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -88,10 +92,10 @@ class PostChitsScreen extends Component {
       console.warn(error);
     }
   };
-
+  //Renders the screen with the specified format
   render() {
     return (
-      <View accessible={true} style={styles.mainView}>
+      <View accessible={true} style={styles.pageBase}>
         <Text style={styles.detailStyle}>
           {'Current user: '}
           {this.state.userID}
@@ -114,17 +118,17 @@ class PostChitsScreen extends Component {
         />
         <CheckBox
           center
-          title="Add Geotag"
+          title="Include location?"
           titleStyle={styles.textStyle}
           value={this.state.chitLocation}
           onValueChange={() =>
             this.setState({chitLocation: !this.state.chitLocation})
           }
-          accessibilityLabel="Add Geotag"
-          accessibilityHint="Select this checkbox to add a geotag to your chit"
+          accessibilityLabel="Add location"
+          accessibilityHint="Tick this box to have your chit include your location"
           accessibilityRole="checkbox"
         />
-        <Text style={styles.chitText}>Add location?</Text>
+        <Text style={styles.chitText}>Include location?</Text>
         <TouchableOpacity
           onPress={() => this.postChit()}
           style={styles.buttonStyle}
@@ -136,23 +140,24 @@ class PostChitsScreen extends Component {
         <TouchableOpacity
           onPress={() => this.chitToCamera()}
           style={styles.buttonStyle}
-          accessibilityLabel="Create acount navigation"
-          accessibilityHint="Press the button to proceed to the create account screen"
+          accessibilityLabel="Post chit and connect to the camera"
+          accessibilityHint="Press the button to proceed to post a chit and allow it to be linked to the next photo taken"
           accessibilityRole="button">
           <Text>Camera</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => this.draftSave()}
+          //onPress={() => this.draftSave()}
+          onPress={() => this.draftManage()}
           style={styles.buttonStyle}
-          accessibilityLabel="Save to drafts"
-          accessibilityHint="Press the button to save the chit to your drafts"
+          accessibilityLabel="Save chit as draft"
+          accessibilityHint="Press the button to send the chit to the draft screen to be stored"
           accessibilityRole="button">
           <Text>Save to Drafts</Text>
         </TouchableOpacity>
       </View>
     );
   }
-
+  //Loads the current logged user to determine if they can post a chit and where to post it
   async loadLoggedUser() {
     const currentUserId = await AsyncStorage.getItem('userID');
     const formattedUserId = await JSON.parse(currentUserId);
@@ -164,26 +169,13 @@ class PostChitsScreen extends Component {
     });
     this.getProfile();
     console.log(
-      'Loaded data from user ID: ' +
+      'Loaded logged user credentials, userID: ' +
         this.state.userID +
-        ' and x-auth: ' +
+        ' and x-Auth: ' +
         this.state.xAuth,
     );
   }
-
-  // async storeLoggedUser() {
-  //   try {
-  //     await AsyncStorage.setItem('userID', JSON.stringify(this.state.userID));
-  //     await AsyncStorage.setItem('xAuth', JSON.stringify(this.state.xAuth));
-  //     let userIDC = await AsyncStorage.getItem('userID');
-  //     let xAuthC = await AsyncStorage.getItem('xAuth');
-
-  //     console.log('user = ' + userIDC + ' auth = ' + xAuthC);
-  //   } catch (error) {
-  //     console.log('Error = ' + error);
-  //   }
-  // }
-
+  //Stores the chit ID to pass to the camera and link the two
   async storeChitID() {
     try {
       await AsyncStorage.setItem('chitID', JSON.stringify(this.state.chitID));
@@ -194,48 +186,113 @@ class PostChitsScreen extends Component {
       console.log('Error = ' + error);
     }
   }
+  //Stores the draft of the users chit
 
-  async draftSave() {
+  async loadCurrentDrafts() {
+    const currentDrafts = await AsyncStorage.getItem('chitDrafts');
+    this.setState({
+      chitDrafts: currentDrafts,
+    });
+    console.log(
+      'Loaded data from drafts: ' + JSON.stringify(this.state.chitDrafts),
+    );
+  }
+
+  async draftManage() {
+    await this.loadCurrentDrafts();
     if (this.state.chitPack !== '') {
-      try {
-        let currentDrafts = await AsyncStorage.getItem('chitDrafts');
-
-        if (currentDrafts !== null) {
-          let formattedDrafts = JSON.parse(currentDrafts);
-          await AsyncStorage.removeItem('chitDrafts');
-          const addedDraft = [
-            {
-              chitPack: this.state.chitPack,
-            },
-          ];
-          let updatedDrafts = formattedDrafts.concat(addedDraft);
-          await AsyncStorage.setItem(
-            'chitDrafts',
-            JSON.stringify(updatedDrafts),
-          );
-        } else {
-          const currentDrafts = [
-            {
-              chitPack: this.state.chitPack,
-            },
-          ];
-          await AsyncStorage.setItem(
-            'chitDrafts',
-            JSON.stringify(currentDrafts),
-          );
-        }
-        Alert.alert('Chit saved to drafts');
-        let chitIDC = await AsyncStorage.getItem('chitDrafts');
-
-        console.log('Chit before sent = ' + chitIDC);
-      } catch (error) {
-        console.log('Error = ' + error);
+      this.setState({
+        drafter: this.state.chitDrafts,
+      });
+      console.log('qweqw   ');
+      if (this.state.drafter !== null) {
+        //console.log('DRaft: ' + JSON.parse(this.chitDrafts));
+        this.multiDraft(this.state.drafter);
+        console.log('Oi');
+      } else {
+        console.log('Noi');
+        this.firstDraft();
       }
     } else {
       Alert.alert('No chit was entered');
     }
   }
 
+  async multiDraft(draft) {
+    //await this.loadCurrentDrafts();
+    console.log('on multi' + draft);
+    try {
+      let formattedDrafts = JSON.parse(draft);
+      console.log('F draft: ' + formattedDrafts);
+      await AsyncStorage.removeItem('chitDrafts');
+      const addedDraft = [
+        {
+          chitPack: this.state.chitPack,
+        },
+      ];
+      let updatedDrafts = formattedDrafts.concat(addedDraft);
+      await AsyncStorage.setItem('chitDrafts', JSON.stringify(updatedDrafts));
+      Alert.alert(
+        'Chit was saved to draft, chit details: ' + this.state.chitPack,
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async firstDraft() {
+    try {
+      const firstDrafts = [
+        {
+          chitPack: this.state.chitPack,
+        },
+      ];
+      await AsyncStorage.setItem('chitDrafts', JSON.stringify(firstDrafts));
+      Alert.alert(
+        'Chit was saved to draft, chit details: ' + this.state.chitPack,
+      );
+    } catch (error) {}
+  }
+
+  // async draftSave() {
+  //   if (this.state.chitPack !== '') {
+  //     try {
+  //       let currentDrafts = await AsyncStorage.getItem('chitDrafts');
+  //       // const currentDrafts2 = await JSON.parse(currentDrafts1);
+  //       // const currentDrafts = await JSON.stringify(currentDrafts2);
+  //       if (currentDrafts == null) {
+  //         console.log(currentDrafts);
+  //         let formattedDrafts = JSON.parse(currentDrafts);
+  //         await AsyncStorage.removeItem('chitDrafts');
+  //         const addedDraft = [
+  //           {
+  //             chitPack: this.state.chitPack,
+  //           },
+  //         ];
+  //         let updatedDrafts = formattedDrafts.concat(addedDraft);
+  //         await AsyncStorage.setItem(
+  //           'chitDrafts',
+  //           JSON.stringify(updatedDrafts),
+  //         );
+  //       } else {
+  //         const firstDrafts = [
+  //           {
+  //             chitPack: this.state.chitPack,
+  //           },
+  //         ];
+  //         await AsyncStorage.setItem('chitDrafts', JSON.stringify(firstDrafts));
+  //       }
+  //       Alert.alert('Chit saved to drafts');
+  //       let chitIDC = await AsyncStorage.getItem('chitDrafts');
+
+  //       console.log('Chit before sent = ' + chitIDC);
+  //     } catch (error) {
+  //       console.log('Error = ' + error);
+  //     }
+  //   } else {
+  //   }
+  // }
+  //Gets the users profile to display on the chit screen
   getProfile = () => {
     if (this.state.xAuth === null) {
       this.state.loggedOn = false;
@@ -261,7 +318,7 @@ class PostChitsScreen extends Component {
         console.log('Error = ' + error);
       });
   };
-
+  //Loads the specified functions whenever the user navigates to the page
   componentDidMount() {
     this.takeFocus = this.props.navigation.addListener('willFocus', () => {
       this.loadLoggedUser();
@@ -270,32 +327,32 @@ class PostChitsScreen extends Component {
     this.loadLoggedUser();
     this.findCoordinates();
   }
-
+  //Used to delay the transition to camera so the store function has time to run
   delayTransition = () => {
     setTimeout(function() {
       //Put All Your Code Here, Which You Want To Execute After Some Delay Time.
       Alert.alert('Go to camera screen to attach a photo to the chit');
     }, 100);
   };
-
+  //Tells the user to go to the camera screen to link a photo
   chitToCamera() {
     this.postChit();
     this.delayTransition();
   }
-
+  //Post chit function to add a chit as the logged in user
   postChit() {
     var date = Date.parse(new Date());
     console.log(date);
     console.log(JSON.stringify(date));
     if (this.state.chitPack.length > 141) {
-      Alert.alert('Chit is too long please shorten it');
+      Alert.alert('Chit is too long, character limit is 141');
     } else {
       console.log(this.state.chitPack.length);
       if (this.state.chitPack === '') {
         console.log('No chit was input');
       } else {
         if (this.state.chitLocation === true) {
-          console.log('Posting chit with location included');
+          console.log('Posting chit with the location value');
           return fetch('http://10.0.2.2:3333/api/v0.0.5/chits', {
             method: 'POST',
             body: JSON.stringify({
@@ -313,8 +370,8 @@ class PostChitsScreen extends Component {
           })
             .then(response => {
               if (response.status === 201) {
-                Alert.alert('Chit posted, returned to home');
-                console.log('Chit included location data');
+                Alert.alert('Chit has been posted');
+                console.log('Chit has location data attached');
                 //this.props.navigation.navigate('Home');
               } else {
                 Alert.alert('Failed to post, you are not logged in');
@@ -332,7 +389,7 @@ class PostChitsScreen extends Component {
               console.error(error);
             });
         } else {
-          console.log('Posting chit without location data');
+          console.log('Posting chit without the location value');
           return fetch('http://10.0.2.2:3333/api/v0.0.5/chits', {
             method: 'POST',
             body: JSON.stringify({
@@ -347,8 +404,8 @@ class PostChitsScreen extends Component {
             .then(response => {
               //console.log(response);
               if (response.status === 201) {
-                Alert.alert('Chit posted successfully');
-                console.log('No location data was added');
+                Alert.alert('Chit has been posted');
+                console.log('Chit does not have location data attached');
                 //this.props.navigation.goBack();
               } else {
                 Alert.alert('Failed to post, you are not logged in');
@@ -372,7 +429,7 @@ class PostChitsScreen extends Component {
 }
 //CSS styling sheet used throught the app to supply a consistent theme and improve user experience
 const styles = StyleSheet.create({
-  mainView: {
+  pageBase: {
     flex: 1,
     flexDirection: 'column',
     backgroundColor: '#101010',

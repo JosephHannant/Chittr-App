@@ -12,11 +12,11 @@ class UpdateDisplayPhoto extends Component {
       xAuth: '',
     };
   }
-
+  //This renders the camera on the screen with the view and a button to take the photo
   render() {
     return (
-      <View style={styles.mainView} accessible={true}>
-        <Text style={styles.pageHead}>Update Display Picture</Text>
+      <View style={styles.pageBase} accessible={true}>
+        <Text style={styles.pageHead}>Update Display Photo</Text>
 
         <RNCamera
           ref={action => {
@@ -43,7 +43,7 @@ class UpdateDisplayPhoto extends Component {
     this.takeFocus = this.props.navigation.addListener('willFocus', () => {
       this.loadLoggedUser();
     });
-    console.log('[SUCCESS] ChangePictureScreen Loaded');
+    console.log('Current user credentials loaded: ');
     this.loadLoggedUser();
   }
 
@@ -91,9 +91,9 @@ class UpdateDisplayPhoto extends Component {
     }
   };
 }
-
+//stylesheet to keep a consistent theme across all of the app
 const styles = StyleSheet.create({
-  mainView: {
+  pageBase: {
     flex: 1,
     flexDirection: 'column',
     marginTop: 5,

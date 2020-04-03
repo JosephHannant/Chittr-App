@@ -9,14 +9,14 @@ class HomeScreen extends Component {
       userData: [],
     };
   }
-
+  //Useed to reload the screen whenever the user navigates to it
   componentDidMount() {
     this.takeFocus = this.props.navigation.addListener('willFocus', () => {
       this.getData();
     });
     this.getData();
   }
-
+  //Fetch request to get the list of chits, count limit implemented to show more chits
   getData() {
     return fetch('http://10.0.2.2:3333/api/v0.0.5/chits?start=0&count=100')
       .then(response => response.json())
@@ -29,14 +29,13 @@ class HomeScreen extends Component {
         console.log(error);
       });
   }
-
+  //Renders all of the chits in the specified format to the screen
   render() {
     return (
-      <View style={styles.mainView}>
+      <View style={styles.pageBase}>
         <Text style={styles.pageHead}> Home Screen </Text>
         <FlatList
           data={this.state.userData}
-          //style={styles.chitList}
           renderItem={({item}) => (
             <Text style={styles.chitItem}>
               <Text style={styles.chitHeader}>
@@ -47,9 +46,6 @@ class HomeScreen extends Component {
                 {item.chit_content}
                 {'\n'}
               </Text>
-              {/* <Text style={styles.chitDate}>
-                Date posted {new Date(item.timestamp).toLocaleString()}
-              </Text> */}
               <Image
                 source={{
                   uri:
@@ -85,10 +81,8 @@ class HomeScreen extends Component {
 }
 //CSS styling sheet used throught the app to supply a consistent theme and improve user experience
 const styles = StyleSheet.create({
-  mainView: {
+  pageBase: {
     flex: 1,
-    //justifyContent: 'center',
-    //alignItems: 'center',
     backgroundColor: '#101010',
   },
   chitList: {
@@ -119,7 +113,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: '#DCDCDC',
     elevation: 1,
-    //width: 350,
   },
   chitHeader: {
     fontWeight: 'bold',

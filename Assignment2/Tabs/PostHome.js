@@ -1,15 +1,5 @@
 import React, {Component} from 'react';
-import {
-  CheckBox,
-  PermissionsAndroid,
-  StyleSheet,
-  Alert,
-  TouchableOpacity,
-  TextInput,
-  Text,
-  View,
-} from 'react-native';
-import Geolocation from 'react-native-geolocation-service';
+import {StyleSheet, TouchableOpacity, Text, View} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 
 class PostHomeScreen extends Component {
@@ -29,38 +19,38 @@ class PostHomeScreen extends Component {
       chitID: '',
     };
   }
-
+  //Renders the home screen for all of the post endpoints
   render() {
     return (
-      <View accessible={true} style={styles.mainView}>
+      <View accessible={true} style={styles.pageBase}>
         <TouchableOpacity
           onPress={() => this.props.navigation.navigate('Post')}
           style={styles.buttonStyle}
-          accessibilityLabel="Post Chits screen"
-          accessibilityHint="Press the button to post the chit"
+          accessibilityLabel="Navigate to post screen"
+          accessibilityHint="Press the button to be sent to the post chit screen"
           accessibilityRole="button">
           <Text>Post chits screen</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => this.props.navigation.navigate('Cam')}
           style={styles.buttonStyle}
-          accessibilityLabel="Create acount navigation"
-          accessibilityHint="Press the button to proceed to the create account screen"
+          accessibilityLabel="Navigate to camera screen"
+          accessibilityHint="Press the button to be sent to the camera screen"
           accessibilityRole="button">
           <Text>Camera screen</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => this.props.navigation.navigate('Drafts')}
           style={styles.buttonStyle}
-          accessibilityLabel="Create acount navigation"
-          accessibilityHint="Press the button to proceed to the create account screen"
+          accessibilityLabel="Navigate to draft screen"
+          accessibilityHint="Press the button to be sent to the draft screen"
           accessibilityRole="button">
           <Text>Drafts screen</Text>
         </TouchableOpacity>
       </View>
     );
   }
-
+  //Loads the currently logged user
   async loadLoggedUser() {
     const currentUserId = await AsyncStorage.getItem('userID');
     const formattedUserId = await JSON.parse(currentUserId);
@@ -77,6 +67,7 @@ class PostHomeScreen extends Component {
         this.state.xAuth,
     );
   }
+  //Runs the specified functions whenever the user navigates to the page
   componentDidMount() {
     this.takeFocus = this.props.navigation.addListener('willFocus', () => {
       this.loadLoggedUser();
@@ -86,7 +77,7 @@ class PostHomeScreen extends Component {
 }
 //CSS styling sheet used throught the app to supply a consistent theme and improve user experience
 const styles = StyleSheet.create({
-  mainView: {
+  pageBase: {
     flex: 1,
     flexDirection: 'column',
     backgroundColor: '#101010',

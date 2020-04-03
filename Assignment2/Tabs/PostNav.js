@@ -10,7 +10,7 @@ import DraftView from './Draft/DraftView';
 
 const Pages = createStackNavigator();
 
-//Search User Navigation Code
+//Stack navigation hub for the post pages
 
 function PostNav() {
   return (
@@ -27,5 +27,4 @@ function PostNav() {
     </NavigationContainer>
   );
 }
-//<Pages.Screen name="Camera" component={Camera} />
 export default PostNav;

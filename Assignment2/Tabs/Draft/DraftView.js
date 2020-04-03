@@ -21,17 +21,15 @@ class DraftView extends Component {
       selectedDraft: '',
       xAuth: '',
       userID: '',
-      loggedID: '',
-      loggedAuth: '',
       finalChit: '',
       delayedChit: '',
-      profileInfo: [],
       longitude: null,
       latitude: null,
       locationPermission: false,
       chitLocation: false,
     };
   }
+  //Runs the specified functions whenever the user navigates to the page
   componentDidMount() {
     this.takeFocus = this.props.navigation.addListener('willFocus', () => {
       this.loadSelectedDraft();
@@ -40,7 +38,7 @@ class DraftView extends Component {
     this.loadSelectedDraft();
     this.findCoordinates();
   }
-
+  //Finds the users co-ordinates
   findCoordinates = () => {
     if (!this.state.locationPermission) {
       this.state.locationPermission = this.requestLocationPermission();
@@ -66,7 +64,7 @@ class DraftView extends Component {
       },
     );
   };
-
+  //Requests the users permission to access their location data
   requestLocationPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -91,7 +89,7 @@ class DraftView extends Component {
       console.warn(error);
     }
   };
-
+  //Loads the logged user for the posting function
   async loadLoggedUser() {
     const currentUserId = await AsyncStorage.getItem('userID');
     const formattedUserId = await JSON.parse(currentUserId);
@@ -109,14 +107,14 @@ class DraftView extends Component {
     );
   }
 
-  delayTransmition = () => {
-    let sentChit = this.state.delayedChit;
-    setTimeout(function() {
-      //this.state.finalChit = sentChit;
-      this.postChit();
-    }, 1000);
-  };
-
+  //   delayTransmition = () => {
+  //     let sentChit = this.state.delayedChit;
+  //     setTimeout(function() {
+  //       //this.state.finalChit = sentChit;
+  //       this.postChit();
+  //     }, 1000);
+  //   };
+  //Stores the chitID to connect it to the camera
   async storeChitID() {
     try {
       await AsyncStorage.setItem('chitID', JSON.stringify(this.state.chitID));
@@ -127,35 +125,31 @@ class DraftView extends Component {
       console.log('Error = ' + error);
     }
   }
-
+  //Loads the draft data selected on the draft screen
   async loadSelectedDraft() {
     const currentDraft = await AsyncStorage.getItem('selecChit');
     const formattedDraft = await JSON.parse(currentDraft);
-    //const xAuthKey = await AsyncStorage.getItem('xAuth');
-    //const formattedXAuth = await JSON.parse(xAuthKey);
     this.setState({
-      //xAuth: formattedXAuth,
       selectedDraft: formattedDraft,
       finalChit: formattedDraft,
-      //userID: currentUserId,
     });
     this.loadLoggedUser();
     console.log('Loaded data from user ID: ' + this.state.selectedDraft);
   }
-
+  //Function to extract the text from the input and place it into the finalChit variable
   viewText = text => {
     this.setState({
       finalChit: text,
     });
   };
-
+  //Prints the draft details
   consoleText = () => {
     console.log(this.state.finalChit);
   };
-
+  //Renders the screen
   render() {
     return (
-      <View style={styles.mainView}>
+      <View style={styles.pageBase}>
         <View>
           <TextInput
             style={styles.textStyle}
@@ -187,7 +181,7 @@ class DraftView extends Component {
             <Text>Post</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => this.delayTransmition()}
+            //onPress={() => this.delayTransmition()}
             style={styles.buttonStyle}
             accessibilityLabel="Follow"
             accessibilityHint="Press to follow user"
@@ -198,7 +192,7 @@ class DraftView extends Component {
       </View>
     );
   }
-
+  //Posts the drafted chit
   postChit() {
     var date = Date.parse(new Date());
     console.log(date);
@@ -288,7 +282,7 @@ class DraftView extends Component {
 }
 //CSS styling sheet used throught the app to supply a consistent theme and improve user experience
 const styles = StyleSheet.create({
-  mainView: {
+  pageBase: {
     flex: 1,
     flexDirection: 'column',
     backgroundColor: '#101010',
