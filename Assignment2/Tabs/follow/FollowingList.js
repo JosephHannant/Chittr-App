@@ -3,7 +3,7 @@ import {Text, View, FlatList, StyleSheet} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {Avatar} from 'react-native-elements';
 
-class SearchUserScreen extends Component {
+class FollowingList extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -192,4 +192,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SearchUserScreen;
+export default FollowingList;

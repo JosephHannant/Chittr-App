@@ -4,11 +4,9 @@ import {
   TextInput,
   CheckBox,
   View,
-  Button,
   TouchableOpacity,
   PermissionsAndroid,
   Alert,
-  FlatList,
   StyleSheet,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -225,7 +223,6 @@ class DraftView extends Component {
               if (response.status === 201) {
                 Alert.alert('Chit posted, returned to home');
                 console.log('Chit included location data');
-                //this.props.navigation.navigate('Home');
               } else {
                 Alert.alert('Failed to post, you are not logged in');
               }
@@ -255,11 +252,10 @@ class DraftView extends Component {
             },
           })
             .then(response => {
-              //console.log(response);
+              console.log(response);
               if (response.status === 201) {
                 Alert.alert('Chit posted successfully');
                 console.log('No location data was added');
-                //this.props.navigation.goBack();
               } else {
                 Alert.alert('Failed to post, you are not logged in');
               }

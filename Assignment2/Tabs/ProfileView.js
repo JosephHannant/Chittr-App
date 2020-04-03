@@ -3,7 +3,7 @@ import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {Avatar} from 'react-native-elements';
 
-class SearchUserScreen extends Component {
+class ProfileViewPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -285,4 +285,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SearchUserScreen;
+export default ProfileViewPage;

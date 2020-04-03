@@ -40,8 +40,7 @@ class Create extends Component {
     })
       .then(response => {
         console.log(response.status);
-        let res = response.json();
-        return res;
+        return response.json();
       })
       .then(() => {
         Alert.alert('Account created');

@@ -34,6 +34,11 @@ class ClientProfile extends Component {
       email: text,
     });
   };
+  //Navigation to the create screen
+  createNavigator = () => {
+    this.props.navigation.navigate('Settings');
+  };
+
   //Function for logging in, takes the inputs and passes them into the post request
   //Checks the response on the request and gives an error if the status code isn't 200
   login = () => {

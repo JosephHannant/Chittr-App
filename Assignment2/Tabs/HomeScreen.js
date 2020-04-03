@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {FlatList, StyleSheet, Text, View, Image} from 'react-native';
-import {Avatar} from 'react-native-elements';
 
 class HomeScreen extends Component {
   constructor(props) {
