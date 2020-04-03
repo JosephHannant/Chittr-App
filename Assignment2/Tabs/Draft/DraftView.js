@@ -105,13 +105,9 @@ class DraftView extends Component {
     );
   }
 
-  //   delayTransmition = () => {
-  //     let sentChit = this.state.delayedChit;
-  //     setTimeout(function() {
-  //       //this.state.finalChit = sentChit;
-  //       this.postChit();
-  //     }, 1000);
-  //   };
+  delayTransmition = () => {
+    Alert.alert('Scheduling was not fully implemented.');
+  };
   //Stores the chitID to connect it to the camera
   async storeChitID() {
     try {
@@ -179,7 +175,7 @@ class DraftView extends Component {
             <Text>Post</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            //onPress={() => this.delayTransmition()}
+            onPress={() => this.delayTransmition()}
             style={styles.buttonStyle}
             accessibilityLabel="Follow"
             accessibilityHint="Press to follow user"

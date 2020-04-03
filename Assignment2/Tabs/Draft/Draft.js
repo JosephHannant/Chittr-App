@@ -73,7 +73,6 @@ class Drafts extends Component {
         </TouchableOpacity>
         <FlatList
           data={this.state.chitDrafts}
-          //style={styles.chitList}
           renderItem={({item}) => (
             <TouchableOpacity
               onPress={() => this.draftNav(item.chitPack)}

@@ -204,13 +204,10 @@ class PostChitsScreen extends Component {
       this.setState({
         drafter: this.state.chitDrafts,
       });
-      console.log('qweqw   ');
       if (this.state.drafter !== null) {
         //console.log('DRaft: ' + JSON.parse(this.chitDrafts));
         this.multiDraft(this.state.drafter);
-        console.log('Oi');
       } else {
-        console.log('Noi');
         this.firstDraft();
       }
     } else {
@@ -239,7 +236,7 @@ class PostChitsScreen extends Component {
       console.log(error);
     }
   }
-
+  //async function to handle the first time a draft is saved
   async firstDraft() {
     try {
       const firstDrafts = [
@@ -253,45 +250,6 @@ class PostChitsScreen extends Component {
       );
     } catch (error) {}
   }
-
-  // async draftSave() {
-  //   if (this.state.chitPack !== '') {
-  //     try {
-  //       let currentDrafts = await AsyncStorage.getItem('chitDrafts');
-  //       // const currentDrafts2 = await JSON.parse(currentDrafts1);
-  //       // const currentDrafts = await JSON.stringify(currentDrafts2);
-  //       if (currentDrafts == null) {
-  //         console.log(currentDrafts);
-  //         let formattedDrafts = JSON.parse(currentDrafts);
-  //         await AsyncStorage.removeItem('chitDrafts');
-  //         const addedDraft = [
-  //           {
-  //             chitPack: this.state.chitPack,
-  //           },
-  //         ];
-  //         let updatedDrafts = formattedDrafts.concat(addedDraft);
-  //         await AsyncStorage.setItem(
-  //           'chitDrafts',
-  //           JSON.stringify(updatedDrafts),
-  //         );
-  //       } else {
-  //         const firstDrafts = [
-  //           {
-  //             chitPack: this.state.chitPack,
-  //           },
-  //         ];
-  //         await AsyncStorage.setItem('chitDrafts', JSON.stringify(firstDrafts));
-  //       }
-  //       Alert.alert('Chit saved to drafts');
-  //       let chitIDC = await AsyncStorage.getItem('chitDrafts');
-
-  //       console.log('Chit before sent = ' + chitIDC);
-  //     } catch (error) {
-  //       console.log('Error = ' + error);
-  //     }
-  //   } else {
-  //   }
-  // }
   //Gets the users profile to display on the chit screen
   getProfile = () => {
     if (this.state.xAuth === null) {

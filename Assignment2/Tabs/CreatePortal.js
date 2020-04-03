@@ -40,7 +40,8 @@ class Create extends Component {
     })
       .then(response => {
         console.log(response.status);
-        return response.json();
+        let res = response.json();
+        return res;
       })
       .then(() => {
         Alert.alert('Account created');
@@ -88,16 +89,16 @@ class Create extends Component {
         <TouchableOpacity
           onPress={() => this.create()}
           style={styles.buttonStyle}
-          accessibilityLabel="Create acount navigation"
-          accessibilityHint="Press the button to proceed to the create account screen"
+          accessibilityLabel="Create acount"
+          accessibilityHint="Press the button to create an account"
           accessibilityRole="button">
           <Text>Create</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => this.updateNav()}
           style={styles.buttonStyle}
-          accessibilityLabel="Create acount navigation"
-          accessibilityHint="Press the button to proceed to the create account screen"
+          accessibilityLabel="Update acount navigation"
+          accessibilityHint="Press the button to proceed to the update account screen"
           accessibilityRole="button">
           <Text>Update Existing Account</Text>
         </TouchableOpacity>
