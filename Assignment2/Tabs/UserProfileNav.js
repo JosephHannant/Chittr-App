@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import CreateAccount from './CreatePortal';
@@ -7,7 +7,7 @@ import UpdateUserPhoto from './UpdateDP';
 
 const Pages = createStackNavigator();
 
-//Search User Navigation Code
+//Navigation hub for the create and update pages
 
 function ProfileNav() {
   return (

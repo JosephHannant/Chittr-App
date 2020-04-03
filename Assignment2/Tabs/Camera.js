@@ -13,10 +13,10 @@ class ChittPhoto extends Component {
       chitID: '',
     };
   }
-
+  //This renders the camera on the screen with the view and a button to take the photo
   render() {
     return (
-      <View style={styles.mainView} accessible={true}>
+      <View style={styles.pageBase} accessible={true}>
         <Text style={styles.pageHead}>Chitt a picture</Text>
 
         <RNCamera
@@ -116,9 +116,9 @@ class ChittPhoto extends Component {
     }
   };
 }
-
+//stylesheet to keep a consistent theme across all of the app
 const styles = StyleSheet.create({
-  mainView: {
+  pageBase: {
     flex: 1,
     flexDirection: 'column',
     marginTop: 5,

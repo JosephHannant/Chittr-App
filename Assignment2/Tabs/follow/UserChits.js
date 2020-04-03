@@ -1,18 +1,8 @@
 import React, {Component} from 'react';
-import {
-  Text,
-  TextInput,
-  View,
-  Button,
-  TouchableOpacity,
-  Alert,
-  FlatList,
-  StyleSheet,
-} from 'react-native';
+import {Text, View, FlatList, StyleSheet} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import {Avatar} from 'react-native-elements';
 
-class SearchUserScreen extends Component {
+class UserChitPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -22,13 +12,14 @@ class SearchUserScreen extends Component {
       profileInfo: [],
     };
   }
+  //Runs the specified functions whenever the user navigates to the page
   componentDidMount() {
     this.takeFocus = this.props.navigation.addListener('willFocus', () => {
       this.loadSearchedUser();
     });
     this.loadSearchedUser();
   }
-
+  //Loads the searched user's credentials
   async loadSearchedUser() {
     const currentUserId = await AsyncStorage.getItem('searchID');
     const formattedUserId = await JSON.parse(currentUserId);
@@ -43,7 +34,7 @@ class SearchUserScreen extends Component {
         this.state.xAuth,
     );
   }
-
+  //Gets the profile data of the searched user
   getProfile = () => {
     return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.userID, {
       method: 'GET',
@@ -58,10 +49,10 @@ class SearchUserScreen extends Component {
         console.log('Error = ' + error);
       });
   };
-
+  //Renders the screen
   render() {
     return (
-      <View style={styles.mainView}>
+      <View style={styles.pageBase}>
         <View>
           <Text style={styles.detailStyle}>
             {this.state.profileInfo.given_name}{' '}
@@ -92,7 +83,7 @@ class SearchUserScreen extends Component {
 }
 //CSS styling sheet used throught the app to supply a consistent theme and improve user experience
 const styles = StyleSheet.create({
-  mainView: {
+  pageBase: {
     flex: 1,
     flexDirection: 'column',
     backgroundColor: '#101010',
@@ -168,4 +159,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SearchUserScreen;
+export default UserChitPage;

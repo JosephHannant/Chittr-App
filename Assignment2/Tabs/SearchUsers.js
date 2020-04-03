@@ -10,7 +10,7 @@ import userChits from './follow/UserChits';
 
 const Pages = createStackNavigator();
 
-//Search User Navigation Code
+//Stack navigation hub for search pages
 
 function SearchNav() {
   return (

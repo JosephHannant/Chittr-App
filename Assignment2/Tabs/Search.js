@@ -1,85 +1,91 @@
 import React, {Component} from 'react';
-import {
-  Text,
-  TextInput,
-  View,
-  Button,
-  Alert,
-  FlatList,
-  StyleSheet,
-} from 'react-native';
+import {View, FlatList, StyleSheet} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {SearchBar, ListItem} from 'react-native-elements';
 
-class SearchUserScreen extends Component {
+class SearchPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       search: '',
       searchReasults: [],
+      query: '',
     };
   }
 
-  //Retrieves ProfileID using AsyncStorage
-  storeSearchID = async id => {
+  //Stores the searched users ID in storage for the view screen
+  storeSearchID = async searchedID => {
     try {
-      console.log('ID:', id);
-      await AsyncStorage.setItem('searchID', JSON.stringify(id));
+      await AsyncStorage.setItem('searchID', JSON.stringify(searchedID));
     } catch (error) {
       console.log(error);
     }
   };
 
-  //Search Function which stays blank if there is no text, or displays and adds results to dataList if there is
-  search = query => {
-    this.setState({search: query});
+  //Function to search for a users account on the server and display it
+  search = async query => {
     if (query !== '') {
-      return fetch('http://10.0.2.2:3333/api/v0.0.5/search_user?q=' + query)
-        .then(response => response.json())
-        .then(responseJson => {
-          this.setState({
-            searchReasults: responseJson,
-          });
-        })
-        .catch(error => {
-          console.log(error);
+      try {
+        const response = await fetch(
+          'http://10.0.2.2:3333/api/v0.0.5/search_user?q=' + query,
+        );
+        const responseJson = await response.json();
+        this.setState({
+          searchResults: responseJson,
         });
+      } catch (error) {
+        console.log(error);
+      }
     } else {
       this.setState({
-        searchReasults: [],
+        searchResults: [],
       });
     }
   };
-
-  //Navigate to single profile function
-  profileNav = selectedID => {
-    this.storeSearchID(selectedID);
-    this.props.navigation.navigate('UserProfiles');
+  //Function to link the text to the search
+  searchingManage = query => {
+    this.setState({
+      search: query,
+    });
+    this.search(query);
   };
 
+  //Navigation to the view profile screen
+  profileNav = selectedAcc => {
+    console.log(
+      'Navigating to user: ' +
+        selectedAcc.user_id +
+        ' ' +
+        selectedAcc.given_name +
+        ' ' +
+        selectedAcc.family_name,
+    );
+    this.storeSearchID(selectedAcc.user_id);
+    this.props.navigation.navigate('UserProfiles');
+  };
+  //Renders the screen
   render() {
     return (
-      <View style={styles.mainView}>
+      <View style={styles.pageBase}>
         <SearchBar
           noIcon={true}
           placeholder="Search for a user"
-          onChangeText={this.search}
+          onChangeText={this.searchingManage}
           value={this.state.search}
-          //style={styles.mainView}
         />
         <FlatList
-          data={this.state.searchReasults}
+          data={this.state.searchResults}
           style={styles.chitList}
           renderItem={({item}) => (
             <ListItem
               title={item.given_name + ' ' + item.family_name}
-              subtitle={item.email}
+              subtitle={'Email: ' + item.email + ' User ID: ' + item.user_id}
               bottomDivider
               chevron
               containerStyle={styles.chitList}
               titleStyle={styles.chitText}
               subtitleStyle={styles.chitText}
-              onPress={() => this.profileNav(item.user_id)}
+              onPress={() => this.profileNav(item)}
             />
           )}
           keyExtractor={(item, index) => String(index)}
@@ -90,7 +96,7 @@ class SearchUserScreen extends Component {
 }
 //CSS styling sheet used throught the app to supply a consistent theme and improve user experience
 const styles = StyleSheet.create({
-  mainView: {
+  pageBase: {
     flex: 1,
     flexDirection: 'column',
     backgroundColor: '#101010',
@@ -106,4 +112,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SearchUserScreen;
+export default SearchPage;

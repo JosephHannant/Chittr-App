@@ -34,6 +34,11 @@ class ClientProfile extends Component {
       email: text,
     });
   };
+  //Navigation to the create screen
+  createNavigator = () => {
+    this.props.navigation.navigate('Settings');
+  };
+
   //Function for logging in, takes the inputs and passes them into the post request
   //Checks the response on the request and gives an error if the status code isn't 200
   login = () => {
@@ -132,19 +137,19 @@ class ClientProfile extends Component {
         console.log('Error = ' + error);
       });
   };
-  //
+  //This loads the logged user details each time the page is loaded to determ,ine what to show the user
   componentDidMount() {
     this.takeFocus = this.props.navigation.addListener('willFocus', () => {
       this.loadLoggedUser();
     });
     this.loadLoggedUser();
   }
-
+  //render using an if statement to check if a users details are loaded to determine what loads
   render() {
     if (this.state.loggedOn === true) {
       console.log(this.state.userID);
       return (
-        <View style={styles.mainView} accessible={true}>
+        <View style={styles.pageBase} accessible={true}>
           <Text style={styles.pageHead}>Logged in Screen</Text>
           <View style={styles.displayPhotoStyle}>
             <Avatar
@@ -179,7 +184,7 @@ class ClientProfile extends Component {
       );
     } else {
       return (
-        <View style={styles.mainView} accessible={true}>
+        <View style={styles.pageBase} accessible={true}>
           <Text style={styles.pageHead}>Login Screen </Text>
 
           <Text style={styles.inputHead}>Email</Text>
@@ -262,7 +267,7 @@ class ClientProfile extends Component {
 }
 //CSS styling sheet used throught the app to supply a consistent theme and improve user experience
 const styles = StyleSheet.create({
-  mainView: {
+  pageBase: {
     flex: 1,
     justifyContent: 'center',
     flexDirection: 'column',
