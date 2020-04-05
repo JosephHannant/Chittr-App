@@ -11,8 +11,11 @@
  From here run the following commands to gain all of the dependencies required for this App:
  
 ```npm install @react-native-community/async-storage @react-native-community/masked-view @react-navigation/native @react-navigation/stack react react-native react-native-camera react-native-elements react-native-geolocation-service react-native-gesture-handler react-native-reanimated react-native-safe-area-context react-native-screens react-native-vector-icons react-navigation react-navigation-stack react-navigation-tabs```
+
  For camera you will have to link it using:
+
  ```react-native link react-native-camera```
+ 
  For the server navigate to where it is downloaded and run `npm install` to set it up and upon completion `npm test` to ensure it works.
 
  ## Running the app
