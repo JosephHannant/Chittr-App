@@ -3,7 +3,7 @@
   This is the screen that deals with taking photos and adding it to the selected chit
 */
 import React, {Component} from 'react';
-import {StyleSheet, TouchableOpacity, Text, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, Text, View, Alert} from 'react-native';
 import {RNCamera} from 'react-native-camera';
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -34,8 +34,8 @@ class ChittPhoto extends Component {
         <TouchableOpacity
           onPress={this.takePicture.bind(this)}
           style={styles.buttonStyle}
-          accessibilityLabel="Change display photo"
-          accessibilityHint="Activate button to take a photo to replace the current photo for the account"
+          accessibilityLabel="Add photo to chit"
+          accessibilityHint="Press to apply this photo to a chit"
           accessibilityRole="button">
           <Text>Take Picture</Text>
         </TouchableOpacity>
@@ -48,7 +48,6 @@ class ChittPhoto extends Component {
     this.takeFocus = this.props.navigation.addListener('willFocus', () => {
       this.loadLoggedUser();
     });
-    console.log('[SUCCESS] ChangePictureScreen Loaded');
     this.loadLoggedUser();
   }
 
@@ -72,12 +71,12 @@ class ChittPhoto extends Component {
   // Async to load the credentials of the current logged in user
   async loadLoggedUser() {
     let userId = await AsyncStorage.getItem('userID');
-    let parsedUserId = await JSON.parse(userId);
+    let formattedUserId = await JSON.parse(userId);
     let xAuth = await AsyncStorage.getItem('xAuth');
-    let parsedXAuth = await JSON.parse(xAuth);
+    let formattedXAuth = await JSON.parse(xAuth);
     this.setState({
-      xAuth: parsedXAuth,
-      userID: parsedUserId,
+      xAuth: formattedXAuth,
+      userID: formattedUserId,
     });
     console.log(
       'Logged user: ' +
@@ -90,33 +89,39 @@ class ChittPhoto extends Component {
 
   // This takes the photo and uploads it to the server to ammend the users display photo
   takePicture = async () => {
-    if (this.camera) {
-      const settings = {quality: 2, base64: true};
-      const data = await this.camera.takePictureAsync(settings);
-      this.loadChitID();
+    if (this.state.xAuth !== null) {
+      if (this.camera) {
+        const settings = {quality: 2, base64: true};
+        const data = await this.camera.takePictureAsync(settings);
+        this.loadChitID();
 
-      console.log(
-        'URI of the photo: ' + data.uri + ' Chit ID: ' + this.state.chitID,
-      );
+        console.log(
+          'URI of the photo: ' + data.uri + ' Chit ID: ' + this.state.chitID,
+        );
 
-      return fetch(
-        'http://10.0.2.2:3333/api/v0.0.5/chits/' + this.state.chitID + '/photo',
-        {
-          method: 'POST',
-          body: data,
-          headers: {
-            'Content-Type': 'image/jpeg',
-            'X-Authorization': JSON.parse(this.state.xAuth),
+        return fetch(
+          'http://10.0.2.2:3333/api/v0.0.5/chits/' +
+            this.state.chitID +
+            '/photo',
+          {
+            method: 'POST',
+            body: data,
+            headers: {
+              'Content-Type': 'image/jpeg',
+              'X-Authorization': JSON.parse(this.state.xAuth),
+            },
           },
-        },
-      )
-        .then(response => {
-          this.props.navigation.goBack();
-          console.log('Photo taken, response code: ' + response.status);
-        })
-        .catch(error => {
-          console.error('A problem occurred taking the photo: ' + error);
-        });
+        )
+          .then(response => {
+            this.props.navigation.goBack();
+            console.log('Photo taken, response code: ' + response.status);
+          })
+          .catch(error => {
+            console.error('A problem occurred taking the photo: ' + error);
+          });
+      }
+    } else {
+      Alert.alert('You are not logged in');
     }
   };
 }
@@ -153,7 +158,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     alignSelf: 'center',
     marginBottom: 5,
-    elevation: 5,
+    elevation: 3,
   },
 });
 

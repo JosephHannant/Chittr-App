@@ -53,7 +53,7 @@ class FollowingList extends Component {
     });
     this.getProfile();
     console.log(
-      '[SUCCESS] Loaded data from user ID: ' +
+      'Searched credentials loaded: ' +
         this.state.userID +
         ' and x-auth: ' +
         this.state.xAuth,

@@ -3,7 +3,7 @@
   This is the screen that displays the selected accounts recent chits
 */
 import React, {Component} from 'react';
-import {Text, View, FlatList, StyleSheet} from 'react-native';
+import {Text, View, FlatList, StyleSheet, Image} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 
 class UserChitPage extends Component {
@@ -73,9 +73,30 @@ class UserChitPage extends Component {
                   {item.chit_content}
                   {'\n'}
                 </Text>
-                <Text style={styles.chitDate}>
-                  Date posted {new Date(item.timestamp).toLocaleString()}
-                </Text>
+                <Image
+                  source={{
+                    uri:
+                      'http://10.0.2.2:3333/api/v0.0.5/chits/' +
+                      item.chit_id +
+                      '/photo',
+                  }}
+                  style={styles.chitPic}
+                />
+                {'\n'}
+                {'\n'}
+                {'\n'}
+                {'\n'}
+                {item.location == null ? (
+                  <Text style={styles.chitDate}>
+                    Date posted {new Date(item.timestamp).toLocaleString()}
+                  </Text>
+                ) : (
+                  <Text style={styles.chitDate}>
+                    Date posted {new Date(item.timestamp).toLocaleString()}
+                    {'\n'}lat: {item.location.latitude} long:{' '}
+                    {item.location.longitude}
+                  </Text>
+                )}
               </Text>
             )}
             keyExtractor={({id}, index) => id}
@@ -104,6 +125,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: '#DCDCDC',
     elevation: 1,
+  },
+  chitPic: {
+    width: 100,
+    height: 120,
   },
   chitList: {
     fontSize: 15,

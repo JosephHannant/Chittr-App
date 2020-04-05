@@ -71,7 +71,7 @@ class ClientProfile extends Component {
               userID: JSON.stringify(responseJson.id),
               xAuth: JSON.stringify(responseJson.token),
             });
-            console.log('Worked lad');
+            console.log('Worked');
             this.storeLoggedUser();
             this.getProfile();
             this.setState({

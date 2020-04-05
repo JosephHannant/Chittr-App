@@ -30,201 +30,221 @@ class UpdateClientProfile extends Component {
   //Updates all of the user details and ensures no value is left blank
   updateAll = () => {
     console.log(this.state.xAuth);
-    if (this.state.upFirstName !== '') {
-      if (this.state.upLastName !== '') {
-        if (this.state.upEmail !== '') {
-          if (this.state.upPassword !== '') {
-            let res = JSON.stringify({
-              given_name: this.state.upFirstName,
-              family_name: this.state.upLastName,
-              email: this.state.upEmail,
-              password: this.state.upPassword,
-            });
-            console.log(res);
-            return fetch(
-              'http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.userID,
-              {
-                method: 'PATCH',
-                body: res,
-                headers: {
-                  'Content-Type': 'application/json',
-                  'X-Authorization': JSON.parse(this.state.xAuth),
-                },
-              },
-            )
-              .then(response => {
-                console.log(response.status);
-                if (response.status === 201) {
-                  Alert.alert('Uppdate successful');
-                } else {
-                  Alert.alert('Problem occurred: ' + response.status);
-                }
-              })
-              .then(responseJson => {
-                console.log(responseJson);
-              })
-              .catch(error => {
-                console.error(error);
+    if (this.state.xAuth !== null) {
+      if (this.state.upFirstName !== '') {
+        if (this.state.upLastName !== '') {
+          if (this.state.upEmail !== '') {
+            if (this.state.upPassword !== '') {
+              let res = JSON.stringify({
+                given_name: this.state.upFirstName,
+                family_name: this.state.upLastName,
+                email: this.state.upEmail,
+                password: this.state.upPassword,
               });
+              console.log(res);
+              return fetch(
+                'http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.userID,
+                {
+                  method: 'PATCH',
+                  body: res,
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'X-Authorization': JSON.parse(this.state.xAuth),
+                  },
+                },
+              )
+                .then(response => {
+                  console.log(response.status);
+                  if (response.status === 201) {
+                    Alert.alert('Uppdate successful');
+                  } else {
+                    Alert.alert('Problem occurred: ' + response.status);
+                  }
+                })
+                .then(responseJson => {
+                  console.log(responseJson);
+                })
+                .catch(error => {
+                  console.error(error);
+                });
+            } else {
+              Alert.alert('No password entered');
+            }
           } else {
-            Alert.alert('No password entered');
+            Alert.alert('No email entered');
           }
         } else {
-          Alert.alert('No email entered');
+          Alert.alert('No last name entered');
         }
       } else {
-        Alert.alert('No last name entered');
+        Alert.alert('No first name entered');
       }
     } else {
-      Alert.alert('No first name entered');
+      Alert.alert('You are not logged in');
     }
   };
   //Only updates first name
   updateFirstName = () => {
     console.log(this.state.xAuth);
-    if (this.state.upFirstName !== '') {
-      let res = JSON.stringify({
-        given_name: this.state.upFirstName,
-      });
-      console.log(res);
-      return fetch(
-        'http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.userID,
-        {
-          method: 'PATCH',
-          body: res,
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Authorization': JSON.parse(this.state.xAuth),
-          },
-        },
-      )
-        .then(response => {
-          console.log(response.status);
-          if (response.status === 201) {
-            Alert.alert('Uppdate successful');
-          } else {
-            Alert.alert('Problem occurred: ' + response.status);
-          }
-        })
-        .then(responseJson => {
-          console.log(responseJson);
-        })
-        .catch(error => {
-          console.error(error);
+    if (this.state.xAuth !== null) {
+      if (this.state.upFirstName !== '') {
+        let res = JSON.stringify({
+          given_name: this.state.upFirstName,
         });
+        console.log(res);
+        return fetch(
+          'http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.userID,
+          {
+            method: 'PATCH',
+            body: res,
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Authorization': JSON.parse(this.state.xAuth),
+            },
+          },
+        )
+          .then(response => {
+            console.log(response.status);
+            if (response.status === 201) {
+              Alert.alert('Uppdate successful');
+            } else {
+              Alert.alert('Problem occurred: ' + response.status);
+            }
+          })
+          .then(responseJson => {
+            console.log(responseJson);
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      } else {
+        Alert.alert('No first name entered');
+      }
     } else {
-      Alert.alert('No first name entered');
+      Alert.alert('You are not logged in');
     }
   };
   //Only updates last name
   updateLastName = () => {
     console.log(this.state.xAuth);
-    if (this.state.upLastName !== '') {
-      let res = JSON.stringify({
-        family_name: this.state.upLastName,
-      });
-      console.log(res);
-      return fetch(
-        'http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.userID,
-        {
-          method: 'PATCH',
-          body: res,
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Authorization': JSON.parse(this.state.xAuth),
-          },
-        },
-      )
-        .then(response => {
-          console.log(response.status);
-          if (response.status === 201) {
-            Alert.alert('Uppdate successful');
-          } else {
-            Alert.alert('Problem occurred: ' + response.status);
-          }
-        })
-        .then(responseJson => {
-          console.log(responseJson);
-        })
-        .catch(error => {
-          console.error(error);
+    if (this.state.xAuth !== null) {
+      if (this.state.upLastName !== '') {
+        let res = JSON.stringify({
+          family_name: this.state.upLastName,
         });
+        console.log(res);
+        return fetch(
+          'http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.userID,
+          {
+            method: 'PATCH',
+            body: res,
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Authorization': JSON.parse(this.state.xAuth),
+            },
+          },
+        )
+          .then(response => {
+            console.log(response.status);
+            if (response.status === 201) {
+              Alert.alert('Uppdate successful');
+            } else {
+              Alert.alert('Problem occurred: ' + response.status);
+            }
+          })
+          .then(responseJson => {
+            console.log(responseJson);
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      } else {
+        Alert.alert('No last name entered');
+      }
     } else {
-      Alert.alert('No last name entered');
+      Alert.alert('You are not logged in');
     }
   };
   //Only updates email
   updateEmail = () => {
     console.log(this.state.xAuth);
-    if (this.state.upEmail !== '') {
-      let res = JSON.stringify({
-        email: this.state.upEmail,
-      });
-      console.log(res);
-      return fetch(
-        'http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.userID,
-        {
-          method: 'PATCH',
-          body: res,
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Authorization': JSON.parse(this.state.xAuth),
-          },
-        },
-      )
-        .then(response => {
-          console.log(response.status);
-          if (response.status === 201) {
-            Alert.alert('Uppdate successful');
-          } else {
-            Alert.alert('Problem occurred: ' + response.status);
-          }
-        })
-        .then(responseJson => {
-          console.log(responseJson);
-        })
-        .catch(error => {
-          console.error(error);
+    if (this.state.xAuth !== null) {
+      if (this.state.upEmail !== '') {
+        let res = JSON.stringify({
+          email: this.state.upEmail,
         });
+        console.log(res);
+        return fetch(
+          'http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.userID,
+          {
+            method: 'PATCH',
+            body: res,
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Authorization': JSON.parse(this.state.xAuth),
+            },
+          },
+        )
+          .then(response => {
+            console.log(response.status);
+            if (response.status === 201) {
+              Alert.alert('Uppdate successful');
+            } else {
+              Alert.alert('Problem occurred: ' + response.status);
+            }
+          })
+          .then(responseJson => {
+            console.log(responseJson);
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      } else {
+        Alert.alert('No Email entered');
+      }
     } else {
-      Alert.alert('No Email entered');
+      Alert.alert('You are not logged in');
     }
   };
   //Only updates password
   updatePassword = () => {
     console.log(this.state.xAuth);
-    if (this.state.upPassword !== '') {
-      let res = JSON.stringify({
-        password: this.state.upPassword,
-      });
-      console.log(res);
-      return fetch(
-        'http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.userID,
-        {
-          method: 'PATCH',
-          body: res,
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Authorization': JSON.parse(this.state.xAuth),
-          },
-        },
-      )
-        .then(response => {
-          console.log(response.status);
-          if (response.status === 201) {
-            Alert.alert('Uppdate successful');
-          } else {
-            Alert.alert('Problem occurred: ' + response.status);
-          }
-        })
-        .then(responseJson => {
-          console.log(responseJson);
-        })
-        .catch(error => {
-          console.error(error);
+    if (this.state.xAuth !== null) {
+      if (this.state.upPassword !== '') {
+        let res = JSON.stringify({
+          password: this.state.upPassword,
         });
+        console.log(res);
+        return fetch(
+          'http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.userID,
+          {
+            method: 'PATCH',
+            body: res,
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Authorization': JSON.parse(this.state.xAuth),
+            },
+          },
+        )
+          .then(response => {
+            console.log(response.status);
+            if (response.status === 201) {
+              Alert.alert('Uppdate successful');
+            } else {
+              Alert.alert('Problem occurred: ' + response.status);
+            }
+          })
+          .then(responseJson => {
+            console.log(responseJson);
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      } else {
+        Alert.alert('No password entered');
+      }
     } else {
-      Alert.alert('No password entered');
+      Alert.alert('You are not logged in');
     }
   };
   //Navigates to the update display photo page

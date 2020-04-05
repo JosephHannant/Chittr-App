@@ -91,7 +91,6 @@ class FollowerList extends Component {
             }}
           />
         </View>
-
         <View>
           <Text style={styles.detailStyle}>
             {this.state.profileInfo.given_name}{' '}

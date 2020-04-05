@@ -3,7 +3,7 @@
   This is the screen that deals with updating the logged in users display photo
 */
 import React, {Component} from 'react';
-import {StyleSheet, TouchableOpacity, Text, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, Text, View, Alert} from 'react-native';
 import {RNCamera} from 'react-native-camera';
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -47,19 +47,18 @@ class UpdateDisplayPhoto extends Component {
     this.takeFocus = this.props.navigation.addListener('willFocus', () => {
       this.loadLoggedUser();
     });
-    console.log('Current user credentials loaded: ');
     this.loadLoggedUser();
   }
 
   // Async to load the credentials of the current logged in user
   async loadLoggedUser() {
     let userId = await AsyncStorage.getItem('userID');
-    let parsedUserId = await JSON.parse(userId);
+    let formattedUserId = await JSON.parse(userId);
     let xAuth = await AsyncStorage.getItem('xAuth');
-    let parsedXAuth = await JSON.parse(xAuth);
+    let formattedXAuth = await JSON.parse(xAuth);
     this.setState({
-      xAuth: parsedXAuth,
-      userID: parsedUserId,
+      xAuth: formattedXAuth,
+      userID: formattedUserId,
     });
     console.log(
       'Logged user: ' +
@@ -71,27 +70,32 @@ class UpdateDisplayPhoto extends Component {
 
   // This takes the photo and uploads it to the server to ammend the users display photo
   takePicture = async () => {
-    if (this.camera) {
-      const settings = {quality: 2, base64: true};
-      const data = await this.camera.takePictureAsync(settings);
+    if (this.state.xAuth !== null) {
+      if (this.camera) {
+        const settings = {quality: 2, base64: true};
+        const data = await this.camera.takePictureAsync(settings);
 
-      console.log('URI of the photo: ' + data.uri);
+        console.log('URI of the photo: ' + data.uri);
 
-      return fetch('http://10.0.2.2:3333/api/v0.0.5/user/photo', {
-        method: 'POST',
-        body: data,
-        headers: {
-          'Content-Type': 'image/jpeg',
-          'X-Authorization': JSON.parse(this.state.xAuth),
-        },
-      })
-        .then(response => {
-          this.props.navigation.navigate('UpdateAccount');
-          console.log('Photo taken, response code: ' + response.status);
+        return fetch('http://10.0.2.2:3333/api/v0.0.5/user/photo', {
+          method: 'POST',
+          body: data,
+          headers: {
+            'Content-Type': 'image/jpeg',
+            'X-Authorization': JSON.parse(this.state.xAuth),
+          },
         })
-        .catch(error => {
-          console.error('A problem occurred taking the photo: ' + error);
-        });
+          .then(response => {
+            this.props.navigation.navigate('UpdateAccount');
+            console.log('Photo taken, response code: ' + response.status);
+            Alert.alert('Display photo updated');
+          })
+          .catch(error => {
+            console.error('A problem occurred taking the photo: ' + error);
+          });
+      }
+    } else {
+      Alert.alert('You are not logged in');
     }
   };
 }
@@ -128,7 +132,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     alignSelf: 'center',
     marginBottom: 5,
-    elevation: 5,
+    elevation: 3,
   },
 });
 

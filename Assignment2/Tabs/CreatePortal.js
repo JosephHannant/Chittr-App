@@ -28,30 +28,50 @@ class Create extends Component {
   };
   //Function to create a user account
   create = () => {
-    let res = JSON.stringify({
-      given_name: this.state.firstName,
-      family_name: this.state.lastName,
-      email: this.state.email,
-      password: this.state.password,
-    });
-    console.log(res);
-    return fetch('http://10.0.2.2:3333/api/v0.0.5/user', {
-      method: 'POST',
-      body: res,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then(response => {
-        console.log(response.status);
-        return response.json();
-      })
-      .then(() => {
-        Alert.alert('Account created');
-      })
-      .catch(error => {
-        console.error(error);
-      });
+    if (this.state.firstName !== '') {
+      if (this.state.lastName !== '') {
+        if (this.state.email !== '') {
+          if (this.state.password !== '') {
+            let res = JSON.stringify({
+              given_name: this.state.firstName,
+              family_name: this.state.lastName,
+              email: this.state.email,
+              password: this.state.password,
+            });
+            console.log(res);
+            try {
+              return fetch('http://10.0.2.2:3333/api/v0.0.5/user', {
+                method: 'POST',
+                body: res,
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              })
+                .then(response => {
+                  console.log(response.status);
+                  return response.json();
+                })
+                .then(() => {
+                  Alert.alert('Account created');
+                })
+                .catch(error => {
+                  console.error(error);
+                });
+            } catch (error) {
+              console.log(error);
+            }
+          } else {
+            Alert.alert('No password entered');
+          }
+        } else {
+          Alert.alert('No email entered');
+        }
+      } else {
+        Alert.alert('No last name entered');
+      }
+    } else {
+      Alert.alert('No first name entered');
+    }
   };
   //Renders the current screen
   render() {

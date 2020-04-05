@@ -110,14 +110,14 @@ class PostChitsScreen extends Component {
         </Text>
         <TextInput
           style={styles.textStyle}
-          placeholder="Compose a Chit..."
+          placeholder="Type your thoughts"
           placeholderTextColor="white"
           onChangeText={this.manageChitData}
           multiline
           numberOfLines={5}
           maxLength={141}
-          accessibilityLabel="Chit Content"
-          accessibilityHint="Enter chit content here"
+          accessibilityLabel="Entery for chits"
+          accessibilityHint="Type your chit in this box"
           accessibilityRole="keyboardkey"
         />
         <CheckBox
@@ -128,7 +128,7 @@ class PostChitsScreen extends Component {
           onValueChange={() =>
             this.setState({chitLocation: !this.state.chitLocation})
           }
-          accessibilityLabel="Add location"
+          accessibilityLabel="Add your location"
           accessibilityHint="Tick this box to have your chit include your location"
           accessibilityRole="checkbox"
         />
@@ -136,8 +136,8 @@ class PostChitsScreen extends Component {
         <TouchableOpacity
           onPress={() => this.postChit()}
           style={styles.buttonStyle}
-          accessibilityLabel="Post Chit"
-          accessibilityHint="Press the button to post the chit"
+          accessibilityLabel="Post the chit"
+          accessibilityHint="Activate this button to post your chit to the server"
           accessibilityRole="button">
           <Text>Post</Text>
         </TouchableOpacity>
@@ -150,7 +150,6 @@ class PostChitsScreen extends Component {
           <Text>Camera</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          //onPress={() => this.draftSave()}
           onPress={() => this.draftManage()}
           style={styles.buttonStyle}
           accessibilityLabel="Save chit as draft"
@@ -288,7 +287,6 @@ class PostChitsScreen extends Component {
   //Used to delay the transition to camera so the store function has time to run
   delayTransition = () => {
     setTimeout(function() {
-      //Put All Your Code Here, Which You Want To Execute After Some Delay Time.
       Alert.alert('Go to camera screen to attach a photo to the chit');
     }, 100);
   };
@@ -302,9 +300,7 @@ class PostChitsScreen extends Component {
     var date = Date.parse(new Date());
     console.log(date);
     console.log(JSON.stringify(date));
-    if (this.state.chitPack.length > 141) {
-      Alert.alert('Chit is too long, character limit is 141');
-    } else {
+    if (this.state.xAuth !== null) {
       console.log(this.state.chitPack.length);
       if (this.state.chitPack === '') {
         console.log('No chit was input');
@@ -330,7 +326,6 @@ class PostChitsScreen extends Component {
               if (response.status === 201) {
                 Alert.alert('Chit has been posted');
                 console.log('Chit has location data attached');
-                //this.props.navigation.navigate('Home');
               } else {
                 Alert.alert('Failed to post, you are not logged in');
               }
@@ -360,11 +355,9 @@ class PostChitsScreen extends Component {
             },
           })
             .then(response => {
-              //console.log(response);
               if (response.status === 201) {
                 Alert.alert('Chit has been posted');
                 console.log('Chit does not have location data attached');
-                //this.props.navigation.goBack();
               } else {
                 Alert.alert('Failed to post, you are not logged in');
               }
@@ -382,6 +375,8 @@ class PostChitsScreen extends Component {
             });
         }
       }
+    } else {
+      Alert.alert('You are not logged in');
     }
   }
 }

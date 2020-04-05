@@ -155,30 +155,30 @@ class DraftView extends Component {
           />
           <CheckBox
             center
-            title="Add Geotag"
+            title="Add your Location?"
             titleStyle={styles.textStyle}
             value={this.state.chitLocation}
             onValueChange={() =>
               this.setState({chitLocation: !this.state.chitLocation})
             }
-            accessibilityLabel="Add Geotag"
-            accessibilityHint="Select this checkbox to add a geotag to your chit"
+            accessibilityLabel="Add your Location data"
+            accessibilityHint="Tick this box to have your chit include your location"
             accessibilityRole="checkbox"
           />
           <Text style={styles.chitText}>Add location?</Text>
           <TouchableOpacity
             onPress={() => this.postChit()}
             style={styles.buttonStyle}
-            accessibilityLabel="Follow"
-            accessibilityHint="Press to follow user"
+            accessibilityLabel="Post draft"
+            accessibilityHint="Press to post the draft to your feed"
             accessibilityRole="button">
             <Text>Post</Text>
           </TouchableOpacity>
           <TouchableOpacity
             //onPress={() => this.delayTransmition()}
             style={styles.buttonStyle}
-            accessibilityLabel="Follow"
-            accessibilityHint="Press to follow user"
+            accessibilityLabel="Schedule draft"
+            accessibilityHint="Press to schedule a draft to be posted at another time"
             accessibilityRole="button">
             <Text>Schedule</Text>
           </TouchableOpacity>
@@ -191,9 +191,7 @@ class DraftView extends Component {
     var date = Date.parse(new Date());
     console.log(date);
     console.log(JSON.stringify(date));
-    if (this.state.finalChit.length > 141) {
-      Alert.alert('Chit is too long please shorten it');
-    } else {
+    if (this.state.xAuth !== null) {
       console.log(this.state.finalChit.length);
       if (this.state.finalChit === '') {
         console.log('No chit was input');
@@ -217,7 +215,7 @@ class DraftView extends Component {
           })
             .then(response => {
               if (response.status === 201) {
-                Alert.alert('Chit posted, returned to home');
+                Alert.alert('Your chit has been posted');
                 console.log('Chit included location data');
               } else {
                 Alert.alert('Failed to post, you are not logged in');
@@ -250,7 +248,7 @@ class DraftView extends Component {
             .then(response => {
               console.log(response);
               if (response.status === 201) {
-                Alert.alert('Chit posted successfully');
+                Alert.alert('Your chit has been posted');
                 console.log('No location data was added');
               } else {
                 Alert.alert('Failed to post, you are not logged in');
@@ -269,6 +267,8 @@ class DraftView extends Component {
             });
         }
       }
+    } else {
+      Alert.alert('You are not logged in');
     }
   }
 }

@@ -3,7 +3,7 @@
   This is the screen that displays a selected accounts profile
 */
 import React, {Component} from 'react';
-import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
+import {Text, View, TouchableOpacity, StyleSheet, Alert} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {Avatar} from 'react-native-elements';
 
@@ -28,57 +28,65 @@ class ProfileViewPage extends Component {
   }
   //Function to follow and account
   followAccount() {
-    return fetch(
-      'http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.userID + '/follow',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Authorization': JSON.parse(this.state.loggedAuth),
+    if (this.state.loggedAuth !== null) {
+      return fetch(
+        'http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.userID + '/follow',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Authorization': JSON.parse(this.state.loggedAuth),
+          },
         },
-      },
-    )
-      .then(response => response.json())
-      .then(responsejson => {
-        console.log(
-          'The user: ' +
-            this.state.loggedID +
-            ' followed user: ' +
-            this.state.userID,
-        );
-        console.log(this.responsejson);
-      })
+      )
+        .then(response => response.json())
+        .then(responsejson => {
+          console.log(
+            'The user: ' +
+              this.state.loggedID +
+              ' followed user: ' +
+              this.state.userID,
+          );
+          console.log(this.responsejson);
+        })
 
-      .catch(error => {
-        console.log(error);
-      });
+        .catch(error => {
+          console.log(error);
+        });
+    } else {
+      Alert.alert('You are not logged in');
+    }
   }
   //Function to unfollow an account
   unfollowAccount() {
-    return fetch(
-      'http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.userID + '/follow',
-      {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Authorization': JSON.parse(this.state.loggedAuth),
+    if (this.state.loggedAuth !== null) {
+      return fetch(
+        'http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.userID + '/follow',
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Authorization': JSON.parse(this.state.loggedAuth),
+          },
         },
-      },
-    )
-      .then(response => response.json())
-      .then(responsejson => {
-        console.log(
-          'The user: ' +
-            this.state.loggedID +
-            ' unfollowed user: ' +
-            this.state.userID,
-        );
-        console.log(this.responsejson);
-      })
+      )
+        .then(response => response.json())
+        .then(responsejson => {
+          console.log(
+            'The user: ' +
+              this.state.loggedID +
+              ' unfollowed user: ' +
+              this.state.userID,
+          );
+          console.log(this.responsejson);
+        })
 
-      .catch(error => {
-        console.log(error);
-      });
+        .catch(error => {
+          console.log(error);
+        });
+    } else {
+      Alert.alert('You are not logged in');
+    }
   }
   //Navigation to follower, following and user chits pages
   goToFollowers() {
@@ -101,10 +109,7 @@ class ProfileViewPage extends Component {
     });
     this.getProfile();
     console.log(
-      'Searched user credentials loaded, userID: ' +
-        this.state.userID +
-        ' and x-Auth: ' +
-        this.state.xAuth,
+      'Searched user credentials loaded, userID: ' + this.state.userID,
     );
   }
   //Loads the current logged in user
