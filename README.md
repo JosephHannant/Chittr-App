@@ -22,4 +22,8 @@
  1. Open android studio and run the vritual device and let it finish building.
  2. Open node.js command prompt and navigate to where the server is and run 'npm start'
  3. Open a new node.js command prompt and navigate to where the app is installed and run 'npx react-native run-android'
+ 
  From here the app is ready to be used.
+
+ ## Details
+ 2020, Joseph Hannant
