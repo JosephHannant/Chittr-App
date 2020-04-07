@@ -25,5 +25,5 @@
 
  From here the app is ready to be used.
 
- ## Details
+ ## License
  2020, Joseph Hannant
