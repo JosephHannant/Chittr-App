@@ -1,0 +1,223 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Create render 1`] = `
+<View
+  style={
+    Object {
+      "backgroundColor": "#101010",
+      "color": "white",
+      "flex": 1,
+      "flexDirection": "column",
+      "fontSize": 12,
+    }
+  }
+>
+  <Text
+    style={
+      Object {
+        "color": "white",
+        "fontWeight": "bold",
+        "textAlign": "center",
+      }
+    }
+  >
+    Create Screen 
+  </Text>
+  <Text
+    style={
+      Object {
+        "color": "white",
+        "fontWeight": "bold",
+      }
+    }
+  >
+    First name
+  </Text>
+  <TextInput
+    allowFontScaling={true}
+    onChangeText={[Function]}
+    rejectResponderTermination={true}
+    style={
+      Object {
+        "borderColor": "white",
+        "borderRadius": 20,
+        "borderWidth": 1.5,
+        "color": "white",
+        "fontSize": 12,
+        "height": 50,
+        "marginBottom": 20,
+        "marginLeft": 10,
+        "marginRight": 10,
+        "marginTop": 5,
+      }
+    }
+    type="givenName"
+    underlineColorAndroid="transparent"
+    value=""
+  />
+  <Text
+    style={
+      Object {
+        "color": "white",
+        "fontWeight": "bold",
+      }
+    }
+  >
+    Last name
+  </Text>
+  <TextInput
+    allowFontScaling={true}
+    onChangeText={[Function]}
+    rejectResponderTermination={true}
+    style={
+      Object {
+        "borderColor": "white",
+        "borderRadius": 20,
+        "borderWidth": 1.5,
+        "color": "white",
+        "fontSize": 12,
+        "height": 50,
+        "marginBottom": 20,
+        "marginLeft": 10,
+        "marginRight": 10,
+        "marginTop": 5,
+      }
+    }
+    type="familyName"
+    underlineColorAndroid="transparent"
+    value=""
+  />
+  <Text
+    style={
+      Object {
+        "color": "white",
+        "fontWeight": "bold",
+      }
+    }
+  >
+    Email
+  </Text>
+  <TextInput
+    allowFontScaling={true}
+    onChangeText={[Function]}
+    rejectResponderTermination={true}
+    style={
+      Object {
+        "borderColor": "white",
+        "borderRadius": 20,
+        "borderWidth": 1.5,
+        "color": "white",
+        "fontSize": 12,
+        "height": 50,
+        "marginBottom": 20,
+        "marginLeft": 10,
+        "marginRight": 10,
+        "marginTop": 5,
+      }
+    }
+    type="emailAddress"
+    underlineColorAndroid="transparent"
+    value=""
+  />
+  <Text
+    style={
+      Object {
+        "color": "white",
+        "fontWeight": "bold",
+      }
+    }
+  >
+    Password
+  </Text>
+  <TextInput
+    allowFontScaling={true}
+    onChangeText={[Function]}
+    rejectResponderTermination={true}
+    secureTextEntry={true}
+    style={
+      Object {
+        "borderColor": "white",
+        "borderRadius": 20,
+        "borderWidth": 1.5,
+        "color": "white",
+        "fontSize": 12,
+        "height": 50,
+        "marginBottom": 20,
+        "marginLeft": 10,
+        "marginRight": 10,
+        "marginTop": 5,
+      }
+    }
+    underlineColorAndroid="transparent"
+    value=""
+  />
+  <View
+    accessibilityHint="Press the button to create your account"
+    accessibilityLabel="Create acount"
+    accessibilityRole="button"
+    accessible={true}
+    focusable={true}
+    isTVSelectable={true}
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      Object {
+        "alignItems": "center",
+        "backgroundColor": "#DCDCDC",
+        "borderRadius": 3,
+        "color": "white",
+        "elevation": 2,
+        "height": 40,
+        "marginLeft": 10,
+        "marginRight": 10,
+        "marginTop": 10,
+        "opacity": 1,
+        "padding": 10,
+      }
+    }
+  >
+    <Text>
+      Create
+    </Text>
+  </View>
+  <View
+    accessibilityHint="Press the button to proceed to the update account screen"
+    accessibilityLabel="Update acount navigation"
+    accessibilityRole="button"
+    accessible={true}
+    focusable={true}
+    isTVSelectable={true}
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      Object {
+        "alignItems": "center",
+        "backgroundColor": "#DCDCDC",
+        "borderRadius": 3,
+        "color": "white",
+        "elevation": 2,
+        "height": 40,
+        "marginLeft": 10,
+        "marginRight": 10,
+        "marginTop": 10,
+        "opacity": 1,
+        "padding": 10,
+      }
+    }
+  >
+    <Text>
+      Update Existing Account
+    </Text>
+  </View>
+</View>
+`;
